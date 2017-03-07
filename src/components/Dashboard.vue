@@ -10,7 +10,8 @@
         </h5>
     </div>
     <div class="ui basic segment"
-        v-for="a in areas">
+        v-for="a in areas"
+        :key="a.state.id">
         <dashboard-area :area="a.state"></dashboard-area>
     </div>
 </section>
@@ -49,9 +50,6 @@ export default {
 }
 </script>
 
-<style src="../assets/semantic/segment.css"></style>
-<style src="../assets/semantic/header.css"></style>
-<style src="../assets/semantic/input.css"></style>
 <style scoped>
 .widgets { padding: 3em 1em 0 1em; }
 .icon.input input {

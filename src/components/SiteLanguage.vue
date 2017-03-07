@@ -21,8 +21,6 @@ export default {
 }
 </script>
 
-<style src="../assets/semantic/icon.css"></style>
-<style src="../assets/semantic/dropdown.css"></style>
 <style scoped>
 .ui.dropdown { margin-left: 10px; }
 </style>

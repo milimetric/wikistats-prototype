@@ -16,7 +16,6 @@
 </div>
 </template>
 
-<style src="./assets/semantic/segment.css"></style>
 <script>
 import TopNav from './components/TopNav'
 import TopicExplorer from './components/TopicExplorer'
@@ -39,9 +38,9 @@ a { color: #6289D8; }
 a:visited { color: #6289D8; }
 a.router-link-active { color: #5C5C5C; }
 
-.top.clearing.segment {
+.ui.top.attached.clearing.segment {
     border-bottom: 3px solid #4A4A4A;
-    padding: 30px 40px!important;
+    padding: 30px 40px;
 }
 .ui.attached.content.segment {
     background-color: #F5F5F5;

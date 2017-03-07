@@ -20,8 +20,6 @@
 </div>
 </template>
 
-<style src="../assets/semantic/item.css"></style>
-<style src="../assets/semantic/image.css"></style>
 <script>
 export default {
     name: 'top-nav',

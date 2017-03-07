@@ -1,13 +1,18 @@
 <template>
-<section class="ui three column grid">
-    <div class="column">
-        <p>footer one</p>
+<section class="ui three column centered grid">
+    <div class="middle aligned column">
+        <p>Find out more <router-link to="/about">about Wikistats</router-link> and the <router-link to="/about-data">data that it uses</router-link></p>
     </div>
-    <div class="column">
-        <p>footer two</p>
+    <div class="middle aligned column">
+        <p>Wikistats is written with <a target="_blank" href="//vuejs.org">Vue.js</a> and <a target="_blank" href="//semantic-ui.com">Semantic UI</a>.  If you'd like to contribute, see our <a target="_blank" href="//wikitech.wikimedia.org/wiki/Analytics/Wikistats2.0">contributing guide</a>.</p>
     </div>
-    <div class="column">
-        <p>footer three</p>
+    <div class="middle aligned column">
+        <p>Wikistats is designed by <a target="_blank" href="//aislinngrigas.com/about/">Aislinn Grigas</a>.</p>
+    </div>
+    <div class="row">
+        <div class="eight wide middle aligned column">
+            <p>To the extent possible under law, The Wikimedia Foundation has waived all copyright and related or neighboring rights the data and charts on this site.</p>
+        </div>
     </div>
 </section>
 </template>
@@ -18,12 +23,6 @@ export default {
 }
 </script>
 
-<style src="../assets/semantic/grid.css"></style>
-<style>
-/*
-WIDGET TEXT: #5C5C5C
-EXPLORE BACKGROUND: #72777D
-LANGUAGE BACKGROUND: #8C8C8C
-FOOTER BACKGROUND: #3B3B3B
-*/
+<style scoped>
+a, a:visited { color: #777; }
 </style>

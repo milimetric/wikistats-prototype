@@ -14,8 +14,6 @@ export default {
 }
 </script>
 
-<style src="../assets/semantic/icon.css"></style>
-<style src="../assets/semantic/button.css"></style>
 <style scoped>
 .top.left {
     position: absolute;
