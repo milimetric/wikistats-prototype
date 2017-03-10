@@ -8,7 +8,8 @@
             <metric-widget
                 v-for="m in area.metrics"
                 :key="m"
-                :metric="{ name: m }">
+                :metric="{ name: m }"
+                :area="area.id">
             </metric-widget>
         </div>
     </div>

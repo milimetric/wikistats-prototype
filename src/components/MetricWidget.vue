@@ -1,19 +1,35 @@
 <template>
 <div class="widget column">
-    <h4 class="ui header">{{metricData.fullName}}</h4>
-    <h2 class="ui header">{{metricData.lastMonthValue}}</h2>
+    <metric-bar-widget
+        v-if="metricData.type === 'bars'"
+        :data="metricData">
+    </metric-bar-widget>
+
+    <metric-list-widget
+        v-if="metricData.type === 'list'"
+        :data="metricData">
+    </metric-list-widget>
 </div>
 </template>
 
 <script>
+import MetricBarWidget from './MetricBarWidget'
+import MetricListWidget from './MetricListWidget'
+import _ from 'lodash'
+
 export default {
     name: 'metric-widget',
-    props: ['metric'],
+    props: ['metric', 'area'],
     data () {
         return {
             loading: false,
             metricData: {},
         }
+    },
+
+    components: {
+        MetricBarWidget,
+        MetricListWidget,
     },
 
     watch: {
@@ -24,33 +40,39 @@ export default {
         this.load()
     },
 
+    //afterUpdate () {
+        //this.drawChart()
+    //},
+
     methods: {
         load () {
-            const self = this;
-            self.loading = true;
+            const self = this
+            self.loading = true
             const fakeSeries = [
-                { month: 'D', metric: 80000 },
-                { month: 'J', metric: 90000 },
-                { month: 'F', metric: 100000 },
-                { month: 'M', metric: 120340 },
-                { month: 'A', metric: 100000 },
-                { month: 'M', metric: 120340 },
-                { month: 'J', metric: 100000 },
-                { month: 'J', metric: 120340 },
-                { month: 'A', metric: 100000 },
-                { month: 'S', metric: 120340 },
-                { month: 'O', metric: 100000 },
-                { month: 'N', metric: 120340 },
-            ];
+                { month: 'December', metric: 80000 },
+                { month: 'January', metric: 90000 },
+                { month: 'February', metric: 100000 },
+                { month: 'March', metric: 120340 },
+                { month: 'April', metric: 100000 },
+                { month: 'May', metric: 120340 },
+                { month: 'June', metric: 100000 },
+                { month: 'July', metric: 120340 },
+                { month: 'August', metric: 100000 },
+                { month: 'September', metric: 120340 },
+                { month: 'October', metric: 100000 },
+                { month: 'November', metric: 120340 },
+            ]
 
             setTimeout(() => {
-                self.loading = false;
-                self.metricData = {
+                self.loading = false
+
+                self.metricData = _.assign({
                     'total-edits': {
                         fullName: 'Total Edits',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: 0.5,
                         lastMonth: 'November',
                         lastMonthValue: 120340,
                         lastYear: 2016,
@@ -58,6 +80,7 @@ export default {
                     },
                     'active-editors': {
                         fullName: 'Active Editors',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 1,
                         changeYoY: -0.5,
@@ -80,23 +103,25 @@ export default {
                     },
                     'total-pageviews': {
                         fullName: 'Total Page Views',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: -0.5,
                         lastMonth: 'November',
-                        lastMonthValue: 120340,
+                        lastMonthValue: 7741345234,
                         lastYear: 2016,
-                        lastYearValue: 1210000,
+                        lastYearValue: 25341345234,
                     },
                     'unique-devices': {
                         fullName: 'Unique Devices',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: -0.5,
                         lastMonth: 'November',
-                        lastMonthValue: 120340,
+                        lastMonthValue: 4921109000,
                         lastYear: 2016,
-                        lastYearValue: 1210000,
+                        lastYearValue: 20101345234,
                     },
                     'most-viewed-articles': {
                         fullName: 'Most Viewed Articles',
@@ -112,44 +137,60 @@ export default {
                     },
                     'total-articles': {
                         fullName: 'Total Articles',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: -0.5,
                         lastMonth: 'November',
-                        lastMonthValue: 120340,
+                        lastMonthValue: 10741345234,
                         lastYear: 2016,
-                        lastYearValue: 1210000,
+                        lastYearValue: 25341345234,
                     },
                     'new-articles': {
                         fullName: 'New Articles',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: -0.5,
                         lastMonth: 'November',
-                        lastMonthValue: 120340,
+                        lastMonthValue: 1435321,
                         lastYear: 2016,
-                        lastYearValue: 1210000,
+                        lastYearValue: 12445234,
                     },
                     'media-uploads': {
                         fullName: 'Media Uploads',
+                        type: 'bars',
                         series: fakeSeries,
                         changeMoM: 3,
-                        changeYoY: 5,
+                        changeYoY: -0.5,
                         lastMonth: 'November',
-                        lastMonthValue: 120340,
+                        lastMonthValue: 1940713,
                         lastYear: 2016,
-                        lastYearValue: 1210000,
+                        lastYearValue: 2145234,
                     },
 
-                }[self.metric.name];
+                }[self.metric.name], {
+                    lightColor: {
+                        contributing:   '#C4CDDF',
+                        reading:        '#B8E9DE',
+                        content:        '#FFF1C6',
+                    }[self.area]
+                }, {
+                    darkColor: {
+                        contributing:   '#2A4B8D',
+                        reading:        '#00AF89',
+                        content:        '#FFCC33',
+                    }[self.area]
+                })
+                console.log(self.metricData)
 
-            }, Math.random()*1000);
+            }, Math.random()*1000)
         },
     },
 }
 </script>
 
-<style scoped>
+<style>
 .widget.column {
     width: 32.6666666666%!important;
     margin-left: 0.3333333333%;
@@ -166,4 +207,26 @@ export default {
 
 .widget.column:first-child { margin-left: 0.1%; margin-right: 0.5666666666%; }
 .widget.column:last-child { margin-left: 0.4666666666%; margin-right: 0.2%; }
+
+.ui.statistic > .label {
+    text-transform: capitalize;
+    text-align: left;
+    font-size: 1.4em;
+    margin-bottom: 4px;
+}
+.ui.statistic .value {
+    font-style: bold;
+}
+
+.ui.horizontal.statistic {
+    margin-bottom: 2px;
+}
+.subdued {
+    color: #999;
+}
+
+.bar-chart {
+    width: 100%;
+    height: 50px;
+}
 </style>
