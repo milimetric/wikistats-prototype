@@ -84,7 +84,9 @@ export default {
                         )
 
                 g.append('g').classed('month-ticks', true)
-                    .attr('transform', `translate(2,${margin.bottom + padding})`)
+                    .attr('transform', `translate(${
+                                            x.bandwidth() / 2 - 5
+                                        },${margin.bottom + padding})`)
                     .selectAll('.month').data(data.series)
                     .enter().append('text')
                         .attr('x', (d) => x(d.month))

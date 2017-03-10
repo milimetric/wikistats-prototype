@@ -1,5 +1,6 @@
 <template>
 <div>
+    <h1 class="ui red header">PROTOTYPE: NO REAL DATA, WORK IN PROGRESS</h1>
     <section class="ui top attached clearing segment">
         <top-nav></top-nav>
     </section>

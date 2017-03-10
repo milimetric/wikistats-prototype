@@ -1,6 +1,6 @@
 <template>
 <section class="widgets">
-    <div class="ui clearing basic segment">
+    <div class="ui clearing basic top segment">
         <h2 class="ui left floated header">Monthly Overview</h2>
         <h5 class="ui right floated header">
             <div class="ui icon input">
@@ -9,7 +9,7 @@
             </div>
         </h5>
     </div>
-    <div class="ui basic segment"
+    <div class="ui basic area segment"
         v-for="a in areas"
         :key="a.state.id">
         <dashboard-area :area="a.state"></dashboard-area>
@@ -57,4 +57,10 @@ export default {
     border: 1px solid #787878;
     border-radius: 4px;
 }
+
+.widgets > .top.segment { margin-top: 10px; margin-bottom: 0; padding-bottom: 0 }
+.widgets > .ui.area.segment:first-child { margin-top: 0; }
+.left.floated.header { padding: 20px 0 0 0; margin: 0 }
+.right.floated.header { margin-right: 0; }
+.right.floated.header .ui.icon.input { margin-right: 0; }
 </style>

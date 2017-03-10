@@ -1,5 +1,5 @@
 <template>
-<div class="widget column">
+<router-link class="widget column" :to="area">
     <metric-bar-widget
         v-if="metricData.type === 'bars'"
         :data="metricData">
@@ -9,7 +9,7 @@
         v-if="metricData.type === 'list'"
         :data="metricData">
     </metric-list-widget>
-</div>
+</router-link>
 </template>
 
 <script>
@@ -200,9 +200,11 @@ export default {
     border-radius: 0 0 8px 8px;
     border: 1px solid #E8E8E8;
     box-shadow: 1px 1px 2px 1px #ccc;
+
+    color: #234!important;
 }
 .widget.column:hover {
-    box-shadow: 1px 1px 4px 1px #898989;
+    box-shadow: 1px 1px 0 1px #aaa;
     cursor: pointer;
 }
 

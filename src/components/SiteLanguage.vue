@@ -2,8 +2,8 @@
 <section>
     <i class="ui globe icon"/>
     Choose your preferred language
-    <div class="ui dropdown labeled search icon button">
-        <span>English</span>
+    <div class="ui simple dropdown labeled search icon button">
+        <span>Cantonese Chinese</span>
         <div class="menu">
             <div class="item">English</div>
             <div class="item">French</div>
