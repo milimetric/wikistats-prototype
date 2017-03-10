@@ -93,6 +93,7 @@ export default {
                         fullName: 'Top Contributors',
                         type: 'list',
                         valueName: 'Total Edits for November', // make month dynamic?
+                        valueFilter: 'thousands',
                         showNumbers: true,
                         sortedList: [
                             { name: 'Username 1', value: 124503 },
@@ -127,6 +128,7 @@ export default {
                         fullName: 'Most Viewed Articles',
                         type: 'list',
                         valueName: 'Total Views November', // make month dynamic?
+                        valueFilter: 'kmb',
                         showNumbers: false,
                         sortedList: [
                             { name: 'Long article name here one', value: 2103000 },
@@ -182,7 +184,6 @@ export default {
                         content:        '#FFCC33',
                     }[self.area]
                 })
-                console.log(self.metricData)
 
             }, Math.random()*1000)
         },
@@ -227,6 +228,6 @@ export default {
 
 .bar-chart {
     width: 100%;
-    height: 50px;
+    height: 60px;
 }
 </style>
