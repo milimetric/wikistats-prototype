@@ -3,10 +3,7 @@
     <div class="ui clearing basic top segment">
         <h2 class="ui left floated header">Monthly Overview</h2>
         <h5 class="ui right floated header">
-            <div class="ui icon input">
-                <input type="text" placeholder="Choose a Wiki" :value="wiki">
-                <i class="search icon"></i>
-            </div>
+            <wiki-selector :wiki="wiki"></wiki-selector>
         </h5>
     </div>
     <div class="ui basic area segment"
@@ -19,34 +16,35 @@
 
 <script>
 import DashboardArea from './DashboardArea'
+import WikiSelector from './WikiSelector'
+import config from '../apis/Configuration'
 
 export default {
     name: 'dashboard',
+    components: {
+        DashboardArea,
+        WikiSelector,
+    },
+
     data () {
         return {
             wiki: 'Wikipedia (All Languages)',
-            areas: [
-                { state: { id: 'contributing', name: 'Contributing', metrics: [
-                    'total-edits',
-                    'active-editors',
-                    'top-contributors',
-                ] }},
-                { state: { id: 'reading', name: 'Reading', metrics: [
-                    'total-pageviews',
-                    'unique-devices',
-                    'most-viewed-articles',
-                ] }},
-                { state: { id: 'content', name: 'Content', metrics: [
-                    'total-articles',
-                    'new-articles',
-                    'media-uploads',
-                ] }},
-            ]
+            areas: []
         };
     },
-    components: {
-        DashboardArea,
-    }
+
+    mounted () {
+        this.load()
+    },
+
+    methods: {
+        load () {
+            const self = this
+            config.areaData().then(function (result) {
+                self.areas = result
+            })
+        },
+    },
 }
 </script>
 

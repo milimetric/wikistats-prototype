@@ -22,10 +22,7 @@ import MetricWidget from './MetricWidget'
 export default {
     name: 'dashboard-area',
     props: ['area'],
-    data () {
-        return {
-        };
-    },
+
     components: {
         MetricWidget,
     },
@@ -40,17 +37,6 @@ export default {
 .area.content .header { border-bottom: 3px solid #FFF1C6; }
 
 .ui.attached.basic.segment { border: none; }
-
-/*
-LIGHT BLUE: #C4CDDF
-DARK BLUE: #2A4B8D
-
-LIGHT GREEN: #B8E9DE
-DARK GREEN: #00AF89
-
-LIGHT YELLOW: #FFF1C6
-DARK YELLOW: #FFCC33
-*/
 
 .contributing { }
 .reading {}

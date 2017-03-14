@@ -9,7 +9,7 @@
                 Wikimedia Statistics
             </h1>
             <div class="right floated link header">
-                <router-link exact
+                <router-link
                     v-for="a in areas" :to="a.path"
                     :key="a.name">
                     {{a.name}}
@@ -21,19 +21,27 @@
 </template>
 
 <script>
+import config from '../apis/Configuration'
+
 export default {
     name: 'top-nav',
     data () {
         return {
-            areas: [
-                { path: '/', name: 'Dashboard' },
-                { path: '/contributing', name: 'Contributing' },
-                { path: '/reading', name: 'Reading' },
-                { path: '/content', name: 'Content' },
-            ]
+            areas: []
         };
     },
+
+    mounted () {
+        this.load()
+    },
+
     methods: {
+        load () {
+            const self = this
+            config.areas().then(function (result) {
+                self.areas = result
+            })
+        },
     },
 }
 </script>

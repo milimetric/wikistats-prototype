@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1 class="ui red header">PROTOTYPE: NO REAL DATA, WORK IN PROGRESS</h1>
+    <h1 class="ui red header">PROTOTYPE: No real data, "Loading Delay" is fake, This is a WORK IN PROGRESS</h1>
     <section class="ui top attached clearing segment">
         <top-nav></top-nav>
     </section>
@@ -54,24 +54,5 @@ a.router-link-active { color: #5C5C5C; }
     background-color: #3B3B3B;
     color: #AAAAAA;
 }
-/*
-TOP: #FFFFFF
-TOP LINKS: #6289D8
-TOP UNDERLINE: #4A4A4A
-BODY BACKGROUND: #F5F5F5
-WIDGET HEADER: #E8E8E8
-WIDGET TEXT: #5C5C5C
-EXPLORE BACKGROUND: #72777D
-LANGUAGE BACKGROUND: #8C8C8C
-FOOTER BACKGROUND: #3B3B3B
 
-LIGHT BLUE: #C4CDDF
-DARK BLUE: #2A4B8D
-
-LIGHT GREEN: #B8E9DE
-DARK GREEN: #00AF89
-
-LIGHT YELLOW: #FFF1C6
-DARK YELLOW: #FFCC33
-*/
 </style>
