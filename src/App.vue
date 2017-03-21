@@ -1,6 +1,6 @@
 <template>
 <div>
-    <h1 class="ui red header">PROTOTYPE: No real data, "Loading Delay" is fake, This is a WORK IN PROGRESS</h1>
+    <h1 class="ui red header">PROTOTYPE: Only tested in Chrome, No real data, "Loading Delay" is fake, This is a WORK IN PROGRESS</h1>
     <section class="ui top attached clearing segment">
         <top-nav></top-nav>
     </section>

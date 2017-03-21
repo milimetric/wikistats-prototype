@@ -84,6 +84,11 @@ const detailSeries = [
         breakdowns: {
             'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
         }
+    },
+    { month: '2016-12-01', total: 130340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 2340, 'Active': 110000, 'Very Active': 18000 }
+        }
     }
 ]
 const metrics = {
@@ -118,7 +123,7 @@ const metrics = {
                 { name: 'Very Active', on: true }
             ] }
         ],
-        detail: detailSeries
+        detail: detailSeries.map((d) => Object.assign(d, {total: d.total + 1}))
     },
     'top-contributors': {
         fullName: 'Top Contributors',

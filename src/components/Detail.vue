@@ -1,7 +1,6 @@
 <template>
-<section class="detail container" :class="area">
-    <table><tr><th>hi</th></tr></table>
-    <section class="left panel">
+<section class="detail container" :class="{ area, fullscreen }">
+    <section class="left panel" v-if="!fullscreen">
         <h3 class="header">Wiki</h3>
         <wiki-selector :wiki="wiki" fluid="true"></wiki-selector>
 
@@ -43,6 +42,7 @@
     <section class="graph panel">
         <div class="ui clearing basic segment">
             <h3 class="ui left floated header">{{metricData.fullName}}</h3>
+            Wikipedia
 
             <simple-legend :data="metricData"></simple-legend>
 
@@ -54,13 +54,13 @@
                      title="Change Chart">
                     <i class="ui dropdown icon"/>
                     <span>
-                        <i :class="chartIcon" class="icon"></i>
+                        <i :class="chartIcon" class="chart icon"></i>
                     </span>
                     <div class="menu">
                         <div class="item"
                              v-for="t in chartTypes" :key="t.chart"
                              @click="changeChart(t)">
-                             <i :class="t.icon" class="icon"></i>
+                             <i :class="t.icon" class="chart icon"></i>
                              {{t.chart}}
                          </div>
                     </div>
@@ -68,13 +68,23 @@
             </div>
         </div>
 
-        <component :is="chartType + '-chart'" :data="metricData" :breakdown="breakdown"></component>
+        <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
 
         <div class="ui center aligned basic segment">
             <time-range-selector></time-range-selector>
             <h5>
                 Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
             </h5>
+        </div>
+
+        <div class="ui center aligned subdued basic segment">
+            <p>* Definition of {{metric}} goes here, pulled from config or maybe dynamically from the wiki page.</p>
+            <p>More descriptor text will go here assuming that it takes a few sentences to explain a term for a metric.</p>
+
+        </div>
+
+        <div class="ui right floated icon button" @click="fullscreen = !fullscreen">
+            <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
         </div>
     </section>
 </section>
@@ -87,6 +97,7 @@ import ArrowIcon from './ArrowIcon'
 import TimeRangeSelector from './TimeRangeSelector'
 
 import BarChart from './BarChart'
+import LineChart from './LineChart'
 import MapChart from './MapChart'
 import TableChart from './TableChart'
 
@@ -101,6 +112,7 @@ export default {
         TimeRangeSelector,
 
         BarChart,
+        LineChart,
         MapChart,
         TableChart,
     },
@@ -108,10 +120,13 @@ export default {
         return {
             wiki: 'Wikipedia (All Languages)',
 
-            chartType: 'table',
-            chartIcon: 'table',
+            fullscreen: false,
+
+            chartType: 'bar',
+            chartIcon: 'bar',
             chartTypes: [
-                { chart: 'bar', icon: 'bar chart' },
+                { chart: 'bar', icon: 'bar' },
+                { chart: 'line', icon: 'line' },
                 { chart: 'map', icon: 'globe' },
                 { chart: 'table', icon: 'table' },
             ],
@@ -131,6 +146,9 @@ export default {
     },
 
     computed: {
+        chartComponent: function () {
+            return this.chartType + '-chart'
+        },
         area: function () {
             return this.$route.params ? this.$route.params.area : 'loading ...'
         },
@@ -161,9 +179,14 @@ export default {
     methods: {
         loadData () {
             const self = this
+
+            self.metricData = {}
+
+            console.log('set metric data to nothing')
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
+                console.log('got data')
             })
 
             config.metrics(this.area).then(function (result) {
@@ -200,6 +223,7 @@ export default {
     background-color: #FFFFFF;
     flex: 1;
     border-radius: 0 10px 10px 0;
+    padding-bottom: 8px;
 }
 
 .clearing.basic.segment { padding: 0; }
@@ -216,4 +240,13 @@ export default {
 }
 .ui.toggle label { cursor: pointer!important; }
 .ui.line.label { display: table; margin: 4px; }
+
+.fullscreen .graph.panel {
+    border-radius: 0;
+}
+.fullscreen.detail.container {
+    padding: 0;
+    padding-top: 60px;
+    margin: -14px;
+}
 </style>
