@@ -1,6 +1,5 @@
 <template>
 <div class="big bar chart">
-    <span>{{data}}</span>
 </div>
 </template>
 
@@ -18,12 +17,12 @@ export default {
 
     mounted () {
         this.drawChart()
-        console.log('mounted bar')
     },
 
-    updated () {
-        this.drawChart()
-        console.log('updated bar')
+    watch: {
+        data: function () {
+            this.drawChart()
+        }
     },
 
     methods: {
@@ -34,6 +33,9 @@ export default {
             const root = d3.select(this.$el),
                   margin = {top: 6, right: 0, bottom: 20, left: 40},
                   padding = 4
+
+            // clean out any previous chart
+            root.selectAll('*').remove()
 
             const svg = root.append('svg'),
                   g = svg.append('g').attr(

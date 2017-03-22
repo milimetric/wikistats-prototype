@@ -7,6 +7,7 @@
     <section class="ui attached content segment">
         <topic-explorer></topic-explorer>
         <router-view></router-view>
+        <scroll-to :id="app"></scroll-to>
     </section>
     <section class="ui attached language segment">
         <site-language></site-language>
@@ -22,6 +23,7 @@ import TopNav from './components/TopNav'
 import TopicExplorer from './components/TopicExplorer'
 import SiteLanguage from './components/SiteLanguage'
 import BottomFooter from './components/BottomFooter'
+import ScrollTo from './components/ScrollTo'
 
 export default {
     name: 'app',
@@ -30,6 +32,7 @@ export default {
         TopicExplorer,
         SiteLanguage,
         BottomFooter,
+        ScrollTo,
     }
 }
 </script>

@@ -180,13 +180,9 @@ export default {
         loadData () {
             const self = this
 
-            self.metricData = {}
-
-            console.log('set metric data to nothing')
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
-                console.log('got data')
             })
 
             config.metrics(this.area).then(function (result) {

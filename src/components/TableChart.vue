@@ -38,12 +38,10 @@ export default {
 
     mounted () {
         this.setColors()
-        console.log('mounted table')
     },
 
     updated () {
         this.setColors()
-        console.log('updated table')
     },
 
     methods: {
