@@ -8,6 +8,10 @@
 # install dependencies
 npm install
 
+# setup semantic
+cd semantic
+gulp build
+
 # serve with hot reload at localhost:8080
 npm run dev
 
