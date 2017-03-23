@@ -30,11 +30,18 @@ export default {
 </script>
 
 <style scoped>
-.area .header { background-color: #E8E8E8; color: #5C5C5C; }
+.area .ui.top.attached.header {
+    background-color: #E8E8E8;
+    color: #4A4A4A;
+    font-size: 18px;
+    font-weight: normal;
+    padding: 7px 21px;
+}
 
-.area.contributing .header { border-bottom: 3px solid #C4CDDF; }
-.area.reading .header { border-bottom: 3px solid #B8E9DE; }
-.area.content .header { border-bottom: 3px solid #FFF1C6; }
+.area .header { border: none; }
+.area.contributing .header { border-bottom: 2px solid #C4CDDF; }
+.area.reading .header { border-bottom: 2px solid #B8E9DE; }
+.area.content .header { border-bottom: 2px solid #FFF1C6; }
 
 .ui.attached.basic.segment { border: none; }
 

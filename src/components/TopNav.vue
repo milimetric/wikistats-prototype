@@ -1,21 +1,17 @@
 <template>
-<div class="ui items">
-    <div class="item">
-        <div class="ui mini image">
+<div>
+    <h1 class="ui left floated title header">
+        <span class="ui mini image">
             <img src="../assets/Wikimedia-logo.svg">
-        </div>
-        <div class="middle aligned content">
-            <h1 class="left floated title header">
-                Wikimedia Statistics
-            </h1>
-            <div class="right floated link header">
-                <router-link
-                    v-for="a in areas" :to="a.path"
-                    :key="a.name">
-                    {{a.name}}
-                </router-link>
-            </div>
-        </div>
+        </span>
+        <span class="text">Wikimedia Statistics</span>
+    </h1>
+    <div class="ui right floated link header">
+        <router-link
+            v-for="a in areas" :to="a.path"
+            :key="a.name">
+            {{a.name}}
+        </router-link>
     </div>
 </div>
 </template>
@@ -47,10 +43,23 @@ export default {
 </script>
 
 <style scoped>
-.title.header { font-size: 18pt!important; }
-.link.header { padding-top: 6px; }
+.ui.mini.image { width: 46px; height: 46px; }
+.title.header {
+    padding: 0;
+    margin: 0;
+}
+.title.header > .text {
+    position: absolute;
+    left: 101px;
+    top: 44px;
+    font-size: 25px;
+    font-family: "Helvetica Neue",Helvetica,Lato,"Open Sans";
+}
+.link.header {
+    padding-top: 20px;
+}
 .link.header a {
-    margin-left: 10px;
-    font-size: 12pt;
+    margin-left: 16px;
+    font-size: 18px;
 }
 </style>

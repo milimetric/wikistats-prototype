@@ -49,16 +49,15 @@ export default {
 </script>
 
 <style scoped>
-.widgets { padding: 3em 1em 0 1em; }
-.icon.input input {
-    color: #787878;
-    border: 1px solid #787878;
-    border-radius: 4px;
-}
+.widgets { padding: 0; margin: 0; }
+.widgets > .segment { padding: 0; }
 
 .widgets > .top.segment { margin-top: 10px; margin-bottom: 0; padding-bottom: 0 }
 .widgets > .ui.area.segment:first-child { margin-top: 0; }
-.left.floated.header { padding: 20px 0 0 0; margin: 0 }
+.left.floated.header {
+    font-size: 30px;
+    font-weight: 500;
+}
 .right.floated.header { margin-right: 0; }
 .right.floated.header .ui.icon.input { margin-right: 0; }
 </style>

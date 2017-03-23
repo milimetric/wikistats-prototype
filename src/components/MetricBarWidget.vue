@@ -1,13 +1,16 @@
 <template>
 <div>
-    <div class="ui small statistic">
+    <div class="ui medium statistic">
         <div class="label">{{data.fullName}}</div>
         <div class="value">{{data.lastMonthValue | thousands}}</div>
     </div>
     <div>
         <span class="subdued">{{data.lastMonth}}</span>
-        <arrow-icon :value="data.changeMoM"/>
-        {{data.changeMoM}} % month over month
+
+        <span class="change label">
+            <arrow-icon :value="data.changeMoM"/>
+            {{data.changeMoM}} % month over month
+        </span>
     </div>
     <div class="bar-chart">
     </div>
@@ -15,10 +18,12 @@
         <div class="value">
             {{data.lastYearValue | kmb}}
         </div>
-        <arrow-icon :value="data.changeYoY"/>
-        {{data.changeYoY}} % year over year
+        <div class="change label">
+            <arrow-icon :value="data.changeYoY"/>
+            {{data.changeYoY}} % year over year
+        </div>
     </div>
-    <div class="subdued">
+    <div class="year total subdued">
         Year Total ({{data.lastYear}})
     </div>
 </div>
@@ -48,7 +53,7 @@ export default {
             const self = this
 
             const root = d3.select(this.$el).select('.bar-chart'),
-                  margin = {top: 6, right: 0, bottom: 10, left: 0},
+                  margin = {top: 16, right: 0, bottom: 8, left: 0},
                   padding = 4
 
             const svg = root.append('svg'),
@@ -86,13 +91,15 @@ export default {
                 g.append('g').classed('month-ticks', true)
                     .attr('transform', `translate(${
                                             x.bandwidth() / 2 - 5
-                                        },${margin.bottom + padding})`)
+                                        },${12})`)
                     .selectAll('.month').data(data.series)
                     .enter().append('text')
                         .attr('x', (d) => x(d.month))
                         .attr('y', height)
                         .text((d) => d.month.substring(0, 1))
                             .style('fill', '#898989')
+                            .style('font-size', '9px')
+                            .style('font-family', 'Lato')
             }
             resize()
             // TODO: get this to resize cleanly d3.select(window).on('resize', resize)
@@ -104,4 +111,10 @@ export default {
 <style>
 .widget.column g.month-ticks { display: none; }
 .widget.column:hover g.month-ticks { display: block; }
+
+.bar-chart {
+    width: 100%;
+    height: 74px;
+    margin-top: 8px;
+}
 </style>

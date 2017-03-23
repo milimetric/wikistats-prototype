@@ -11,3 +11,14 @@ export default {
     props: ['wiki', 'fluid'],
 }
 </script>
+
+<style>
+.ui.icon.input > input {
+    border: 1px solid #aaa9a9;
+    border-radius: 4px;
+    width: 260px;
+    height: 48px;
+    color: #4A4A4A;
+    font-size: 17px;
+}
+</style>

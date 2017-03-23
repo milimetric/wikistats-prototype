@@ -7,13 +7,6 @@ import * as numeral from 'numeral'
 
 Vue.config.productionTip = false
 
-numeral.locales.en.abbreviations = {
-    thousand: 'K',
-    million: 'M',
-    billion: 'B',
-    trillion: 'T'
-}
-
 // Register filters
 Vue.filter('thousands', (n) => numeral(n).format('0,0'))
 Vue.filter('kmb', (n) => numeral(n).format('0.0a'))

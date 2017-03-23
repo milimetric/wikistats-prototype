@@ -23,4 +23,8 @@ export default {
 
 <style scoped>
 .ui.dropdown { margin-left: 10px; }
+section {
+    color: #fff;
+    font-size: 12px;
+}
 </style>

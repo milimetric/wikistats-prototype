@@ -61,42 +61,59 @@ export default {
 <style>
 .widget.column {
     width: 32.6666666666%!important;
+    height: 265px;
     margin-left: 0.3333333333%;
     margin-right: 0.3333333333%;
     background-color: #ffffff;
-    border-radius: 0 0 8px 8px;
-    border: 1px solid #E8E8E8;
-    box-shadow: 1px 1px 2px 1px #ccc;
+    border-radius: 0 0 10px 10px;
+    border: 1px solid #d4d4d5;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 
-    color: #234!important;
+    color: #000!important;
+    padding: 13px 22px!important;
 }
 .widget.column:hover {
-    box-shadow: 1px 1px 0 1px #aaa;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.35);
     cursor: pointer;
 }
 
-.widget.column:first-child { margin-left: 0.1%; margin-right: 0.5666666666%; }
-.widget.column:last-child { margin-left: 0.4666666666%; margin-right: 0.2%; }
+.widget.column:first-child { margin-left: 0; margin-right: 0.6666666666%; }
+.widget.column:last-child { margin-left: 0.6666666666%; margin-right: 0%; }
 
-.ui.statistic > .label {
+.ui.medium.statistic > .label {
     text-transform: capitalize;
     text-align: left;
-    font-size: 1.4em;
-    margin-bottom: 4px;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 8px;
 }
-.ui.statistic .value {
-    font-style: bold;
+.ui.medium.statistic > .value {
+    font-size: 50px!important;
+    font-weight: bold!important;
+}
+.ui.medium.statistic {
+    margin-bottom: 0;
+}
+.ui.small.horizontal.statistic > .value {
+    font-size: 25px!important;
+    font-weight: bold!important;
+}
+.ui.small.horizontal.statistic > .label {
+    margin-left: 10px;
+    text-transform: none;
+    font-size: 13px;
+}
+
+.change.label {
+    color: #4a4a4a!important;
+    font-style: italic;
+    font-weight: 400;
 }
 
 .ui.horizontal.statistic {
-    margin-bottom: 2px;
+    margin: 4px 2px 2px 2px;
 }
 .subdued {
-    color: #999;
-}
-
-.bar-chart {
-    width: 100%;
-    height: 60px;
+    color: #9b9b9b;
 }
 </style>
