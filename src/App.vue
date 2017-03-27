@@ -80,5 +80,5 @@ a.router-link-active { font-weight: bold; color: #72777d }
 }
 
 /* remove this, just making the prototype line up with the design files */
-.app { max-width: 1024px; min-width: 1024px; width: 1024px; margin-left: 30px; }
+.app { max-width: 1024px; min-width: 1024px; width: 1024px; margin: 0 auto; }
 </style>

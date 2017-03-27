@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .widgets { padding: 0; margin: 0; }
 .widgets > .segment { padding: 0; }
 
@@ -60,4 +60,13 @@ export default {
 }
 .right.floated.header { margin-right: 0; }
 .right.floated.header .ui.icon.input { margin-right: 0; }
+
+.widgets .ui.icon.input > input {
+    border: 1px solid #aaa9a9;
+    border-radius: 4px;
+    width: 260px;
+    height: 48px;
+    color: #4A4A4A;
+    font-size: 17px;
+}
 </style>

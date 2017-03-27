@@ -1,8 +1,13 @@
 <template>
 <section class="detail container" :class="{ area, fullscreen }">
     <section class="left panel" v-if="!fullscreen">
-        <h3 class="header">Wiki</h3>
-        <wiki-selector :wiki="wiki" fluid="true"></wiki-selector>
+        <div class="wikis">
+            <h3 class="header">Wiki</h3>
+            <wiki-selector :wiki="wiki" fluid="true"></wiki-selector>
+            <p>
+                <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
+            </p>
+        </div>
 
         <div class="ui clearing divider"></div>
 
@@ -11,7 +16,7 @@
         <router-link v-for="o in otherMetrics" :key="o.name"
                      :to="'/' + area + '/' + o.name"
                      class="ui line label"
-                     :class="{grey: metric === o.name}">
+                     :class="{active: o.name === metric}">
             {{o.fullName}}
         </router-link>
 
@@ -41,8 +46,10 @@
     </section>
     <section class="graph panel">
         <div class="ui clearing basic segment">
-            <h3 class="ui left floated header">{{metricData.fullName}}</h3>
-            Wikipedia
+            <h2 class="ui left floated header">
+                {{metricData.fullName}}
+                <span class="subdued">Wikipedia</span>
+            </h2>
 
             <simple-legend :data="metricData"></simple-legend>
 
@@ -83,7 +90,7 @@
 
         </div>
 
-        <div class="ui right floated icon button" @click="fullscreen = !fullscreen">
+        <div class="ui right floated icon button" @click="toggleFullscreen">
             <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
         </div>
     </section>
@@ -198,23 +205,61 @@ export default {
             this.chartType = t.chart
             this.chartIcon = t.icon
         },
+
+        toggleFullscreen () {
+            this.fullscreen = !this.fullscreen
+
+            // TODO: hack, figure out a way to re-render bar without this
+            const t = this.metricData,
+                  self = this
+            this.metricData = {}
+            setTimeout(function () {
+                self.metricData = t
+            }, 0)
+        },
+
+        addAnotherWiki () {
+            alert('Not in the prototype yet')
+        },
     },
 }
 </script>
 
-<style scoped>
+<style>
 .detail.container {
-    padding: 60px 20px 20px 20px;
+    margin: 23px 0 5px 0;
     display: flex;
     align-items: stretch;
 }
 .panel {
-    padding: 18px;
+    padding: 25px 18px 18px 18px;
 }
 .left.panel {
     background-color: #D8D8D8;
-    width: 280px;
+    width: 242px;
 }
+.left.panel h3.header {
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0 0 6px 0;
+}
+.left.panel p {
+    margin-top: 8px;
+}
+.left.panel .ui.clearing.divider {
+    margin-bottom: 2px;
+}
+.left.panel .wikis {
+    min-height: 120px;
+}
+.left.panel .ui.icon.input.fluid > input {
+    width: 198px;
+    height: 36px;
+    font-size: 13px!important;
+    border: 1px solid #aaa9a9!important;
+    padding-right: 32px!important;
+}
+
 .graph.panel {
     background-color: #FFFFFF;
     flex: 1;
@@ -222,10 +267,33 @@ export default {
     padding-bottom: 8px;
 }
 
+.graph.panel h2.header {
+    margin-left: 10px;
+    font-size: 20px;
+    font-weight: 500;
+}
+.graph.panel h2.header .subdued {
+    margin-left: 4px;
+    font-size: 18px;
+    color: #777;
+    font-weight: 300;
+}
+.graph.panel .ui.right.floated.buttons {
+    border: solid 1px #d4d4d5;
+    border-radius: 4px;
+}
+.graph.panel .ui.right.floated.buttons .button {
+    border-right: solid 1px #d4d4d5;
+    border-radius: 4px;
+}
+.graph.panel .ui.right.floated.buttons .button:last-child {
+    border-right: none;
+}
+
 .clearing.basic.segment { padding: 0; }
 .xui.checkbox {
     display: block;
-    margin: 10px;
+    margin: 10px 0;
     cursor: pointer;
 }
 .xui.checkbox input[type=checkbox] {
@@ -234,15 +302,33 @@ export default {
     height: 18px;
     margin-right: 3px;
 }
-.ui.toggle label { cursor: pointer!important; }
-.ui.line.label { display: table; margin: 4px; }
+.left.panel .ui.toggle { margin-top: 10px; }
+.left.panel .ui.toggle label { cursor: pointer!important; }
+.left.panel .ui.line.label {
+    display: table;
+    margin: 3px;
+    background-color: #fefefe!important;
+    border: solid 2px #cdcdcd!important;
+    font-size: 13px;
+    font-weight: 500;
+    color: #9b9b9b!important;
+    padding: 5px 9px;
+}
+.left.panel .ui.line.active.label {
+    background-color: #a7a7a7!important;
+    border: solid 2px #979797!important;
+    font-weight: bold;
+    color: #222!important;
+}
+
+.app .ui.toggle.checkbox input:checked ~ label:before {
+    background-color: #227634!important;
+}
 
 .fullscreen .graph.panel {
     border-radius: 0;
 }
 .fullscreen.detail.container {
-    padding: 0;
-    padding-top: 60px;
-    margin: -14px;
+    margin: 0 -32px -27px -32px;
 }
 </style>
