@@ -1,14 +1,25 @@
 import _ from 'lodash'
 
+const colors = {
+    contributing: ['#c4cddf', '#99afd9', '#6582ba', '#2a4b8d'],
+    reading: ['#c8f0e7', '#77d8c2', '#00af89', '#03745c'],
+    content: ['#fff1c6', '#f9df90', '#ffcc33', '#ddad1c']
+}
+const stableColorIndexes = {
+    'Lightly Active': 1,
+    'Active': 2,
+    'Very Active': 3
+}
+
 const lightColor = {
-    contributing: '#C4CDDF',
-    reading: '#B8E9DE',
-    content: '#FFF1C6'
+    contributing: colors.contributing[0],
+    reading: colors.reading[0],
+    content: colors.content[0]
 }
 const darkColor = {
-    contributing: '#2A4B8D',
-    reading: '#00AF89',
-    content: '#FFCC33'
+    contributing: colors.contributing[3],
+    reading: colors.reading[3],
+    content: colors.content[3]
 }
 const fakeSeries = [
     { month: 'December', metric: 80000 },
@@ -27,67 +38,67 @@ const fakeSeries = [
 const detailSeries = [
     { month: '2015-12-01', total: 80000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 70000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 70000, 'Very Active': 22000 }
         }
     },
     { month: '2016-01-01', total: 90000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 80000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 80000, 'Very Active': 22000 }
         }
     },
     { month: '2016-02-01', total: 100000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 90000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
         }
     },
     { month: '2016-03-01', total: 120340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
         }
     },
     { month: '2016-04-01', total: 100000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 90000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
         }
     },
     { month: '2016-05-01', total: 120340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
         }
     },
     { month: '2016-06-01', total: 100000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 90000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
         }
     },
     { month: '2016-07-01', total: 120340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
         }
     },
     { month: '2016-08-01', total: 100000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 90000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
         }
     },
     { month: '2016-09-01', total: 120340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
         }
     },
     { month: '2016-10-01', total: 100000,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2000, 'Active': 90000, 'Very Active': 8000 }
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
         }
     },
     { month: '2016-11-01', total: 120340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 100000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
         }
     },
     { month: '2016-12-01', total: 130340,
         breakdowns: {
-            'Activity Level': { 'Lightly Active': 2340, 'Active': 110000, 'Very Active': 18000 }
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 110000, 'Very Active': 38000 }
         }
     }
 ]
@@ -117,13 +128,13 @@ const metrics = {
         lastYear: 2016,
         lastYearValue: 60102,
         breakdowns: [
-            { on: false, name: 'Activity Level', values: [
+            { on: true, name: 'Activity Level', values: [
                 { name: 'Lightly Active', on: true },
                 { name: 'Active', on: true },
                 { name: 'Very Active', on: true }
             ] }
         ],
-        detail: detailSeries.map((d) => Object.assign(d, {total: d.total + 1}))
+        detail: detailSeries.map((d) => Object.assign(d, { total: d.total + 1 }))
     },
     'top-contributors': {
         fullName: 'Top Contributors',
@@ -277,5 +288,8 @@ export default {
         })
 
         return promise
-    }
+    },
+
+    colors,
+    stableColorIndexes
 }

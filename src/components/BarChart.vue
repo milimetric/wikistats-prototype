@@ -11,6 +11,8 @@ import * as axes from 'd3-axis'
 import * as format from 'd3-format'
 import * as time from 'd3-time'
 
+import config from '../apis/Configuration'
+
 export default {
     name: 'bar-chart',
     props: ['data', 'breakdown'],
@@ -20,7 +22,14 @@ export default {
     },
 
     watch: {
-        data: function () {
+        data: {
+            handler: function () {
+                this.drawChart()
+            },
+            deep: true
+        },
+
+        breakdown: function () {
             this.drawChart()
         }
     },
@@ -51,25 +60,57 @@ export default {
                       height = n.offsetHeight - margin.top - margin.bottom - padding,
                       x = scales.scaleTime().rangeRound([0, width]),
                       y = scales.scaleLinear().rangeRound([height, 0]),
+                      xW = scales.scaleBand().align(0).padding(0.85),
                       dates = data.detail.map((d) => new Date(Date.parse(d.month)))
 
-                x.domain([arr.min(dates), arr.max(dates)])
+                x.domain(arr.extent(dates))
                 y.domain([0, arr.max(data.detail.map((d) => d.total))])
+
+                xW.range(x.range()).domain(x.domain())
 
                 svg.attr('width', n.offsetWidth).attr('height', n.offsetHeight)
                 g.attr('width', width).attr('height', height)
 
-                g.append('g').selectAll('.bar').data(data.detail)
-                    .enter().append('rect')
-                        .attr('x', (d) => x(Date.parse(d.month)))
-                        .attr('y', (d) => y(d.total))
-                        .attr('width', width / dates.length - (padding*3))
-                        .attr('height', (d) => height - y(d.total))
-                        .attr('fill', (d) => self.data.darkColor)
+                if (self.breakdown) {
+                    // this should be dynamic but we only have four colors
+                    // the data structure is bad, redo that in real code
+                    g.append('g').selectAll('.bar').data(data.detail)
+                        .enter().selectAll('.minibar').data(function (d) {
+                            // this should be passed in
+                            const breakdown = self.data.breakdowns[0]
+                            const breakdowns = breakdown.values.filter((x) => x.on)
+
+                            // in the real version make sure colors stick with particular breakdown values
+                            const newData = breakdowns.map((b, i) => ({
+                                month: d.month,
+                                key: b.name,
+                                value: d.breakdowns[breakdown.name][b.name],
+                                color: config.colors[self.data.area][[config.stableColorIndexes[b.name]]],
+                                width: xW.bandwidth() / breakdowns.length,
+                                index: i
+                            }))
+
+                            return newData
+                        }).enter().append('rect')
+                            .attr('x', (d) => x(Date.parse(d.month)) + d.index * d.width / xW.padding())
+                            .attr('y', (d) => y(d.value))
+                            .attr('width', (d) => d.width)
+                            .attr('height', (d) => height - y(d.value))
+                            .attr('fill', (d) => d.color)
+
+                } else {
+                    g.append('g').selectAll('.bar').data(data.detail)
+                        .enter().append('rect')
+                            .attr('x', (d) => x(Date.parse(d.month)))
+                            .attr('y', (d) => y(d.total))
+                            .attr('width', xW.bandwidth())
+                            .attr('height', (d) => height - y(d.total))
+                            .attr('fill', (d) => self.data.darkColor)
+                }
 
                 const xAxis = axes.axisBottom(x).ticks(time.timeMonth.every(3)),
                       yAxis = axes.axisLeft(y).ticks(7)
-                                .tickFormat(format.format('0.0s'))
+                                .tickFormat(format.format('0.00s'))
 
                 g.append('g')
                     .call(yAxis)
@@ -88,5 +129,6 @@ export default {
 </script>
 
 <style>
-.big.bar.chart { min-height: 360px; min-width: 660px; }
+.big.bar.chart { min-height: 386px; min-width: 700px; }
+.fullscreen .big.bar.chart { min-height: 492px; }
 </style>

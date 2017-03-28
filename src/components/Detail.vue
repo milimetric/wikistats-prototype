@@ -51,25 +51,28 @@
                 <span class="subdued">Wikipedia</span>
             </h2>
 
-            <simple-legend :data="metricData"></simple-legend>
+            <div class="ui right floated basic fudge segment">
+                <simple-legend v-if="chartType === 'bar'" class="simple legend" :data="metricData"></simple-legend>
+                <div class="ui right floated icon buttons">
 
-            <div class="ui right floated icon buttons">
-                <button class="ui icon button" title="Download">
-                    <i class="download icon"></i>
-                </button>
-                <div class="ui simple dropdown right labeled icon button"
-                     title="Change Chart">
-                    <i class="ui dropdown icon"/>
-                    <span>
-                        <i :class="chartIcon" class="chart icon"></i>
-                    </span>
-                    <div class="menu">
-                        <div class="item"
-                             v-for="t in chartTypes" :key="t.chart"
-                             @click="changeChart(t)">
-                             <i :class="t.icon" class="chart icon"></i>
-                             {{t.chart}}
-                         </div>
+                    <button class="ui icon button" title="Download">
+                        <i class="download icon"></i>
+                    </button>
+                    <div class="ui simple dropdown right labeled icon button"
+                         title="Change Chart">
+                        <i class="ui dropdown icon"/>
+                        <span>
+                            <i :class="chartIcon" class="chart icon"></i>
+                        </span>
+                        <div class="menu">
+                            <div class="item"
+                                :class="{disabled: ['bar', 'table'].indexOf(t.chart) < 0}"
+                                 v-for="t in chartTypes" :key="t.chart"
+                                 @click="changeChart(t)">
+                                 <i :class="t.icon" class="chart icon"></i>
+                                 {{t.chart}}
+                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -284,7 +287,6 @@ export default {
 }
 .graph.panel .ui.right.floated.buttons .button {
     border-right: solid 1px #d4d4d5;
-    border-radius: 4px;
 }
 .graph.panel .ui.right.floated.buttons .button:last-child {
     border-right: none;
@@ -330,5 +332,14 @@ export default {
 }
 .fullscreen.detail.container {
     margin: 0 -32px -27px -32px;
+}
+.right.floated.basic.fudge.segment {
+    margin: 0;
+    padding: 0;
+}
+.simple.legend {
+    margin-right: 10px;
+    margin-top: 5px;
+    display: inline-block;
 }
 </style>
