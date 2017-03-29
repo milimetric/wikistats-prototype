@@ -2,15 +2,23 @@
 <div>
     <table :class="data.area" class="ui table" v-if="!breakdown">
         <thead>
-            <tr>
+            <tr v-if="data.type === 'bars'">
                 <th>Month</th>
                 <th>Total</th>
             </tr>
+            <tr v-if="data.type === 'list'">
+                <th>Name</th>
+                <th>{{data.valueName}}</th>
+            </tr>
         </thead>
         <tbody>
-            <tr v-for="m in data.detail">
+            <tr v-for="m in data.detail" v-if="data.type === 'bars'">
                 <td>{{m.month}}</td>
                 <td>{{m.total}}</td>
+            </tr>
+            <tr v-for="m in data.sortedList" v-if="data.type === 'list'">
+                <td>{{m.name}}</td>
+                <td>{{m.value}}</td>
             </tr>
         </tbody>
     </table>

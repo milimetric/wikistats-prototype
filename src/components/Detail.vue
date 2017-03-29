@@ -80,7 +80,7 @@
 
         <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
 
-        <div class="ui center aligned basic segment">
+        <div class="ui center aligned basic segment" v-if="metricData.type === 'bars'">
             <time-range-selector></time-range-selector>
             <h5>
                 Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
@@ -110,6 +110,7 @@ import BarChart from './BarChart'
 import LineChart from './LineChart'
 import MapChart from './MapChart'
 import TableChart from './TableChart'
+import EmptyChart from './EmptyChart'
 
 import config from '../apis/Configuration'
 
@@ -125,6 +126,7 @@ export default {
         LineChart,
         MapChart,
         TableChart,
+        EmptyChart,
     },
     data () {
         return {
@@ -132,9 +134,11 @@ export default {
 
             fullscreen: false,
 
-            chartType: 'bar',
-            chartIcon: 'bar',
-            chartTypes: [
+            // doing some exaggerated computables to test deeper chaining
+            chartTypes: [],
+            chartType: null,
+            chartIcon: 'empty',
+            availableChartTypes: [
                 { chart: 'bar', icon: 'bar' },
                 { chart: 'line', icon: 'line' },
                 { chart: 'map', icon: 'globe' },
@@ -157,7 +161,7 @@ export default {
 
     computed: {
         chartComponent: function () {
-            return this.chartType + '-chart'
+            return (this.chartType || 'empty') + '-chart'
         },
         area: function () {
             return this.$route.params ? this.$route.params.area : 'loading ...'
@@ -180,6 +184,13 @@ export default {
 
     watch: {
         'metric': 'loadData',
+        'metricData.type': function () {
+            this.chartTypes = this.availableChartTypes.filter((c) =>
+                this.metricData.type === 'bars' || c.chart === 'table'
+            )
+            this.chartType = this.chartTypes[0].chart
+            this.chartIcon = this.chartTypes[0].icon
+        }
     },
 
     mounted () {
@@ -193,6 +204,7 @@ export default {
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
+                self.chartTypes = self.availableChartTypes
             })
 
             config.metrics(this.area).then(function (result) {
@@ -290,6 +302,10 @@ export default {
 }
 .graph.panel .ui.right.floated.buttons .button:last-child {
     border-right: none;
+}
+
+.graph.panel p {
+    margin: 0;
 }
 
 .clearing.basic.segment { padding: 0; }

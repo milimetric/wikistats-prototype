@@ -36,7 +36,7 @@ export default {
         const self = this
         setTimeout(function () {
             self.warning = false
-        }, 2000)
+        }, 7000)
     },
     components: {
         TopNav,
