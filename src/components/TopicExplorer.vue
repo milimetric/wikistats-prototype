@@ -16,19 +16,39 @@
             <i class="ui info circle icon"/>
             Explore Topics
             <div class="ui simple dropdown right labeled search icon button">
-                <span>How are people contributing?</span>
+                <span v-if="!selectedQuestion" class="subdued">Find questions you are interested in and click Go for the answers</span>
+                <span v-if="selectedQuestion">
+                    {{selectedQuestion.q}}
+                    <span class="subdued">metric: {{selectedQuestion.m}}</span>
+                </span>
                 <div class="menu">
-                    <div class="item">Who is editing the most?</div>
-                    <div class="item">How much are people reading?</div>
-                    <div class="item">What devices are people reading on?</div>
-                    <div class="item">What platforms are people reading on?</div>
-                    <div class="item">How many articles are thre?</div>
-                    <div class="item">What are the top edited articles?</div>
-                    <div class="item">How much media is there (video, sound, images)?</div>
+                    <h4>Contributing</h4>
+                    <div class="item" v-for="q in contributingQuestions"
+                        @click="selectQuestion(q)">
+                        {{q.q}} <span class="subdued">metric: {{q.m}}</span>
+                    </div>
+
+                    <h4>Reading</h4>
+                    <div class="item" v-for="q in readingQuestions"
+                        @click="selectQuestion(q)">
+                        {{q.q}} <span class="subdued">metric: {{q.m}}</span>
+                    </div>
+
+                    <h4>Content</h4>
+                    <div class="item" v-for="q in contentQuestions"
+                        @click="selectQuestion(q)">
+                        {{q.q}} <span class="subdued">metric: {{q.m}}</span>
+                    </div>
+
+                    <h4>More</h4>
+                    <div class="item" v-for="q in moreQuestions"
+                        @click="selectQuestion(q)">
+                        {{q.q}} <span class="subdued">metric: {{q.m}}</span>
+                    </div>
                 </div>
                 <i class="dropdown icon"/>
             </div>
-            <div class="ui blue button">Go</div>
+            <div class="ui blue button" @click="go">Go</div>
             <span class="right floated">
                 <span class="link" @click="minimized = true">
                     <i class="ui left chevron icon"/>
@@ -40,12 +60,70 @@
 </template>
 
 <script>
+import r from '../router/index'
+import _ from 'lodash'
+
+const questions = [
+    {f: true, a: 'contributing', m: 'Top Contributors', q: 'Who are the top contributors?'},
+    {a: 'contributing', m: 'New Editors', q: 'How many new editors are there?'},
+    {a: 'contributing', m: 'Newly registered users', q: 'How many new users are there?'},
+    {f: true, a: 'contributing', m: 'Active Editors', q: 'How many active editors are there?'},
+    {a: 'contributing', m: 'Total editors', q: 'How many editors are there?'},
+    {a: 'contributing', m: 'Editors by language', q: 'How many editors are there in the most populated countries?'},
+    {f: true, a: 'contributing', m: 'Total Edits', q: 'How many edits have been made?'},
+    {a: 'contributing', m: 'Non-bot edits', q: 'How many edits have been made by registered human users?'},
+    {a: 'contributing', m: 'Anonymous edits', q: 'How many edits have been made by anonymous users?'},
+    {a: 'contributing', m: 'Edits per article', q: 'How many edits does an article receive on average?'},
+    {a: 'contributing', m: 'Top edited articles', q: 'What are the most edited articles?'},
+    {a: 'contributing', m: 'Total Reverts', q: 'How many edits undo previous edits?'},
+    {f: true, a: 'reading', m: 'Total Pageviews', q: 'How many times are articles viewed?'},
+    {f: true, a: 'reading', m: 'Unique Devices', q: 'How many unique devices access content?'},
+    {f: true, a: 'reading', m: 'Most Viewed Articles', q: 'What are the most viewed articles?'},
+    {a: 'reading', m: 'Article Pageviews', q: 'How many times is an article viewed, on average?'},
+    {a: 'reading', m: 'Page Views per Edit?', q: 'How many times is a particular article version viewed?'},
+    {f: true, a: 'content', m: 'Total Articles', q: 'How many articles are there?'},
+    {f: true, a: 'content', m: 'Media Uploads', q: 'How much media is there (video, sound, images)?'},
+    {f: true, a: 'content', m: 'New articles', q: 'How many new articles are added?'},
+    {a: 'content', m: 'Article size (bytes)', q: 'What is the size of all articles in bytes?'},
+    {a: 'content', m: 'Articles with most edits', q: 'What articles have the most edits?'},
+    {a: 'content', m: 'Articles with most contributors', q: 'What are the articles with the most contributors?'},
+    {a: 'content', m: 'Reference Links', q: 'Where do articles link to?'},
+]
+
 export default {
   name: 'topic-explorer',
 
   data () {
       return {
           minimized: true,
+
+          selectedQuestion: null
+      }
+  },
+
+  computed: {
+      contributingQuestions: function () {
+          return questions.filter((m) => m.f && m.a === 'contributing')
+      },
+      readingQuestions: function () {
+          return questions.filter((m) => m.f && m.a === 'reading')
+      },
+      contentQuestions: function () {
+          return questions.filter((m) => m.f && m.a === 'content')
+      },
+      moreQuestions: function () {
+          return questions.filter((m) => !m.f)
+      }
+  },
+
+  methods: {
+      selectQuestion (q) {
+          this.selectedQuestion = q
+      },
+
+      go () {
+          const s = this.selectedQuestion
+          r.push('/' + s.a + '/' + _.kebabCase(s.m))
       }
   }
 }
@@ -105,5 +183,20 @@ export default {
     background-color: #3366cc!important;
     width: 78px;
 
+}
+
+.ui.simple.dropdown.right.labeled.search.icon.button h4 {
+    margin: 6px 8px;
+}
+.ui.simple.dropdown.right.labeled.search.icon.button .item {
+    padding: 6px 8px!important;
+}
+.ui.simple.dropdown.right.labeled.search.icon.button .subdued {
+    margin-left: 10px;
+}
+.ui.simple.dropdown.right.labeled.search.icon.button .menu {
+    border-radius: 0;
+    min-height: 340px;
+    overflow-y: scroll;
 }
 </style>
