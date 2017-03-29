@@ -3,7 +3,7 @@
     <div class="ui clearing basic top segment">
         <h2 class="ui left floated header">Monthly Overview</h2>
         <h5 class="ui right floated header">
-            <wiki-selector :wiki="wiki"></wiki-selector>
+            <wiki-selector :wiki="wiki" single="true" @wiki="wikiSelected" ></wiki-selector>
         </h5>
     </div>
     <div class="ui basic area segment"
@@ -21,6 +21,7 @@ import config from '../apis/Configuration'
 
 export default {
     name: 'dashboard',
+    props: ['wiki'],
     components: {
         DashboardArea,
         WikiSelector,
@@ -28,7 +29,6 @@ export default {
 
     data () {
         return {
-            wiki: 'Wikipedia (All Languages)',
             areas: []
         };
     },
@@ -38,6 +38,9 @@ export default {
     },
 
     methods: {
+        wikiSelected (wiki) {
+            this.$emit('wiki', wiki)
+        },
         load () {
             const self = this
             config.areaData().then(function (result) {
@@ -61,10 +64,12 @@ export default {
 .right.floated.header { margin-right: 0; }
 .right.floated.header .ui.icon.input { margin-right: 0; }
 
-.widgets .ui.icon.input > input {
+.widgets .ui.input {
+    width: 260px;
+}
+.widgets .ui.input > input {
     border: 1px solid #aaa9a9;
     border-radius: 4px;
-    width: 260px;
     height: 48px;
     color: #4A4A4A;
     font-size: 17px;

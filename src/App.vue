@@ -7,7 +7,7 @@
     <section class="ui attached content segment">
         <topic-explorer></topic-explorer>
 
-        <router-view></router-view>
+        <router-view :wiki="wiki" @wiki="wikiSelected"></router-view>
     </section>
     <section class="ui attached language segment">
         <site-language></site-language>
@@ -29,7 +29,8 @@ export default {
     name: 'app',
     data () {
         return {
-            warning: true
+            warning: true,
+            wiki: 'Wikipedia (All languages)'
         }
     },
     mounted () {
@@ -44,6 +45,11 @@ export default {
         SiteLanguage,
         BottomFooter,
         ScrollTo,
+    },
+    methods: {
+        wikiSelected (wiki) {
+            this.wiki = wiki
+        }
     }
 }
 </script>

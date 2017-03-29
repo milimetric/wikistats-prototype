@@ -3,7 +3,7 @@
     <section class="left panel" v-if="!fullscreen">
         <div class="wikis">
             <h3 class="header">Wiki</h3>
-            <wiki-selector :wiki="wiki" fluid="true"></wiki-selector>
+            <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
             <p>
                 <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
             </p>
@@ -48,7 +48,7 @@
         <div class="ui clearing basic segment">
             <h2 class="ui left floated header">
                 {{metricData.fullName}}
-                <span class="subdued">Wikipedia</span>
+                <span class="subdued">{{wiki.replace(' (All languages)', '')}}</span>
             </h2>
 
             <div class="ui right floated basic fudge segment">
@@ -116,6 +116,7 @@ import config from '../apis/Configuration'
 
 export default {
     name: 'detail',
+    props: ['wiki'],
     components: {
         WikiSelector,
         SimpleLegend,
@@ -130,8 +131,6 @@ export default {
     },
     data () {
         return {
-            wiki: 'Wikipedia (All Languages)',
-
             fullscreen: false,
 
             // doing some exaggerated computables to test deeper chaining
@@ -198,6 +197,9 @@ export default {
     },
 
     methods: {
+        wikiSelected (wiki) {
+            this.$emit('wiki', wiki)
+        },
         loadData () {
             const self = this
 
@@ -251,7 +253,7 @@ export default {
 }
 .left.panel {
     background-color: #D8D8D8;
-    width: 242px;
+    min-width: 242px;
 }
 .left.panel h3.header {
     font-size: 16px;
@@ -267,11 +269,14 @@ export default {
 .left.panel .wikis {
     min-height: 120px;
 }
-.left.panel .ui.icon.input.fluid > input {
-    width: 198px;
+.left.panel .ui.icon.input {
+    width: 204px;
+}
+.left.panel .ui.icon.input > input {
     height: 36px;
     font-size: 13px!important;
     border: 1px solid #aaa9a9!important;
+    border-radius: 4px;
     padding-right: 32px!important;
 }
 
