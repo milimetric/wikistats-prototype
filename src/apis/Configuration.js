@@ -102,6 +102,73 @@ const detailSeries = [
         }
     }
 ]
+
+const questions = [
+    { f: true, a: 'contributing', m: 'Top Contributors', q: 'Who are the top contributors?' },
+    { a: 'contributing', m: 'New Editors', q: 'How many new editors are there?' },
+    { a: 'contributing', m: 'Newly registered users', q: 'How many new users are there?' },
+    { f: true, a: 'contributing', m: 'Active Editors', q: 'How many active editors are there?' },
+    { a: 'contributing', m: 'Total editors', q: 'How many editors are there?' },
+    { a: 'contributing', m: 'Editors by language', q: 'How many editors are there in the most populated countries?' },
+    { f: true, a: 'contributing', m: 'Total Edits', q: 'How many edits have been made?' },
+    { a: 'contributing', m: 'Non-bot edits', q: 'How many edits have been made by registered human users?' },
+    { a: 'contributing', m: 'Anonymous edits', q: 'How many edits have been made by anonymous users?' },
+    { a: 'contributing', m: 'Edits per article', q: 'How many edits does an article receive on average?' },
+    { a: 'contributing', m: 'Top edited articles', q: 'What are the most edited articles?' },
+    { a: 'contributing', m: 'Total Reverts', q: 'How many edits undo previous edits?' },
+    { f: true, a: 'reading', m: 'Total Pageviews', q: 'How many times are articles viewed?' },
+    { f: true, a: 'reading', m: 'Unique Devices', q: 'How many unique devices access content?' },
+    { f: true, a: 'reading', m: 'Most Viewed Articles', q: 'What are the most viewed articles?' },
+    { a: 'reading', m: 'Article Pageviews', q: 'How many times is an article viewed, on average?' },
+    { a: 'reading', m: 'Page Views per Edit?', q: 'How many times is a particular article version viewed?' },
+    { f: true, a: 'content', m: 'Total Articles', q: 'How many articles are there?' },
+    { f: true, a: 'content', m: 'Media Uploads', q: 'How much media is there (video, sound, images)?' },
+    { f: true, a: 'content', m: 'New articles', q: 'How many new articles are added?' },
+    { a: 'content', m: 'Article size (bytes)', q: 'What is the size of all articles in bytes?' },
+    { a: 'content', m: 'Articles with most edits', q: 'What articles have the most edits?' },
+    { a: 'content', m: 'Articles with most contributors', q: 'What are the articles with the most contributors?' },
+    { a: 'content', m: 'Reference Links', q: 'Where do articles link to?' }
+]
+
+const areasWithMetrics = _.transform(questions, function (result, q) {
+    let area = result.find((a) => a.name === q.a)
+    if (!area) {
+        area = {
+            name: q.a,
+            order: { contributing: 1, reading: 2, content: 3 }[q.a],
+            color: colors[q.a][1],
+            metrics: []
+        }
+        result.unshift(area)
+    }
+
+    area.metrics.push({
+        name: _.kebabCase(q.m),
+        fullName: q.m
+    })
+
+    result.sort((a, b) => a.order > b.order)
+    return result
+}, [])
+
+const mainMetricsByArea = [
+
+    { state: { id: 'contributing', name: 'Contributing', metrics: [
+        'total-edits',
+        'active-editors',
+        'top-contributors'
+    ] }},
+    { state: { id: 'reading', name: 'Reading', metrics: [
+        'total-pageviews',
+        'unique-devices',
+        'most-viewed-articles'
+    ] }},
+    { state: { id: 'content', name: 'Content', metrics: [
+        'total-articles',
+        'new-articles',
+        'media-uploads'
+    ] }}
+]
 const metrics = {
     'total-edits': {
         fullName: 'Total Edits',
@@ -268,28 +335,14 @@ export default {
 
     areaData () {
         const promise = new Promise(function (resolve, reject) {
-            resolve([
-                { state: { id: 'contributing', name: 'Contributing', metrics: [
-                    'total-edits',
-                    'active-editors',
-                    'top-contributors'
-                ] }},
-                { state: { id: 'reading', name: 'Reading', metrics: [
-                    'total-pageviews',
-                    'unique-devices',
-                    'most-viewed-articles'
-                ] }},
-                { state: { id: 'content', name: 'Content', metrics: [
-                    'total-articles',
-                    'new-articles',
-                    'media-uploads'
-                ] }}
-            ])
+            resolve(mainMetricsByArea)
         })
 
         return promise
     },
 
     colors,
-    stableColorIndexes
+    stableColorIndexes,
+    questions,
+    areasWithMetrics
 }

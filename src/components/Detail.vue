@@ -20,6 +20,9 @@
             {{o.fullName}}
         </router-link>
 
+        <p>
+            <a @click.prevent="viewMoreMetrics" href="#">View more metrics</a>
+        </p>
 
         <div v-if="breakdowns">
         <div class="ui clearing divider"></div>
@@ -39,6 +42,7 @@
                         Breakdown
                         <span v-if="!b.on">Off</span>
                         <span v-if="b.on">On</span>
+                        <i class="help circle icon" title="Breakdowns help you see more detail by breaking down the total values into parts."/>
                     </label>
                 </div>
             </div>
@@ -47,7 +51,7 @@
     <section class="graph panel">
         <div class="ui clearing basic segment">
             <h2 class="ui left floated header">
-                {{metricData.fullName}}
+                {{metricData.fullName || 'No data yet... '}}
                 <span class="subdued">{{wiki.replace(' (All languages)', '')}}</span>
             </h2>
 
@@ -97,6 +101,28 @@
             <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
         </div>
     </section>
+
+    <div class="ui metrics modal">
+        <i class="close icon"></i>
+        <div class="header">
+            All Metrics
+            <div class="subdued">Select a metric to visualize and explore its data</div>
+        </div>
+        <div class="ui three column grid">
+            <div class="column" v-for="a in areasWithMetrics">
+                <h4 :class="a.name" :style="{ borderBottom: '2px solid ' + a.color }">{{a.name}}</h4>
+                <div v-for="m in a.metrics" :key="m.name"
+                             class="ui line label"
+                             :class="{active: m.name === highlightMetric.name}"
+                             @click="changeHighlight(m.name, a.name)">
+                    {{m.fullName}}
+                </div>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui blue button" @click="goHighlight">Go</div>
+        </div>
+    </div>
 </section>
 </template>
 
@@ -113,6 +139,7 @@ import TableChart from './TableChart'
 import EmptyChart from './EmptyChart'
 
 import config from '../apis/Configuration'
+import router from '../router/index'
 
 export default {
     name: 'detail',
@@ -132,6 +159,8 @@ export default {
     data () {
         return {
             fullscreen: false,
+            areasWithMetrics: config.areasWithMetrics,
+            highlightMetric: {},
 
             // doing some exaggerated computables to test deeper chaining
             chartTypes: [],
@@ -194,6 +223,7 @@ export default {
 
     mounted () {
         this.loadData()
+        $('.ui.metrics.modal').modal()
     },
 
     methods: {
@@ -202,6 +232,8 @@ export default {
         },
         loadData () {
             const self = this
+
+            this.highlightMetric = { name: this.metric, area: this.area }
 
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
@@ -238,6 +270,20 @@ export default {
         addAnotherWiki () {
             alert('Not in the prototype yet')
         },
+
+        viewMoreMetrics () {
+            $('.ui.metrics.modal').modal('show')
+        },
+
+        changeHighlight (name, area) {
+            this.highlightMetric = { name, area }
+        },
+
+        goHighlight (area) {
+            const h = this.highlightMetric
+            router.push('/' + h.area + '/' + h.name)
+            $('.ui.metrics.modal').modal('hide')
+        }
     },
 }
 </script>
@@ -327,7 +373,7 @@ export default {
 }
 .left.panel .ui.toggle { margin-top: 10px; }
 .left.panel .ui.toggle label { cursor: pointer!important; }
-.left.panel .ui.line.label {
+.ui.line.label {
     display: table;
     margin: 3px;
     background-color: #fefefe!important;
@@ -336,8 +382,9 @@ export default {
     font-weight: 500;
     color: #9b9b9b!important;
     padding: 5px 9px;
+    cursor: pointer;
 }
-.left.panel .ui.line.active.label {
+.ui.line.active.label {
     background-color: #a7a7a7!important;
     border: solid 2px #979797!important;
     font-weight: bold;
@@ -362,5 +409,46 @@ export default {
     margin-right: 10px;
     margin-top: 5px;
     display: inline-block;
+}
+
+.ui.metrics.modal {
+    /* width: 685px; looks a little better bigger */
+    width: 780px;
+    left: 700px;
+}
+.ui.metrics.modal .header {
+    font-weight: bold;
+    border: none;
+    padding-bottom: 10px;
+}
+.ui.metrics.modal .actions {
+    border: none;
+    background-color: #fff;
+}
+.ui.metrics.modal .ui.grid {
+    padding: 14px 28px;
+}
+
+.ui.metrics.modal i.close.icon {
+    position: relative;
+    top: initial;
+    right: initial;
+    float: right;
+    color: #bababa;
+}
+.ui.metrics.modal .header .subdued {
+    font-size: 13px;
+    font-weight: normal;
+}
+
+.ui.metrics.modal .column h4 {
+    text-transform: capitalize;
+    font-size: 17px;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+.ui.blue.button {
+    background-color: #3366cc!important;
+    width: 78px;
 }
 </style>

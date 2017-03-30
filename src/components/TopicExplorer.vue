@@ -62,33 +62,8 @@
 <script>
 import r from '../router/index'
 import _ from 'lodash'
+import config from '../apis/Configuration'
 
-const questions = [
-    {f: true, a: 'contributing', m: 'Top Contributors', q: 'Who are the top contributors?'},
-    {a: 'contributing', m: 'New Editors', q: 'How many new editors are there?'},
-    {a: 'contributing', m: 'Newly registered users', q: 'How many new users are there?'},
-    {f: true, a: 'contributing', m: 'Active Editors', q: 'How many active editors are there?'},
-    {a: 'contributing', m: 'Total editors', q: 'How many editors are there?'},
-    {a: 'contributing', m: 'Editors by language', q: 'How many editors are there in the most populated countries?'},
-    {f: true, a: 'contributing', m: 'Total Edits', q: 'How many edits have been made?'},
-    {a: 'contributing', m: 'Non-bot edits', q: 'How many edits have been made by registered human users?'},
-    {a: 'contributing', m: 'Anonymous edits', q: 'How many edits have been made by anonymous users?'},
-    {a: 'contributing', m: 'Edits per article', q: 'How many edits does an article receive on average?'},
-    {a: 'contributing', m: 'Top edited articles', q: 'What are the most edited articles?'},
-    {a: 'contributing', m: 'Total Reverts', q: 'How many edits undo previous edits?'},
-    {f: true, a: 'reading', m: 'Total Pageviews', q: 'How many times are articles viewed?'},
-    {f: true, a: 'reading', m: 'Unique Devices', q: 'How many unique devices access content?'},
-    {f: true, a: 'reading', m: 'Most Viewed Articles', q: 'What are the most viewed articles?'},
-    {a: 'reading', m: 'Article Pageviews', q: 'How many times is an article viewed, on average?'},
-    {a: 'reading', m: 'Page Views per Edit?', q: 'How many times is a particular article version viewed?'},
-    {f: true, a: 'content', m: 'Total Articles', q: 'How many articles are there?'},
-    {f: true, a: 'content', m: 'Media Uploads', q: 'How much media is there (video, sound, images)?'},
-    {f: true, a: 'content', m: 'New articles', q: 'How many new articles are added?'},
-    {a: 'content', m: 'Article size (bytes)', q: 'What is the size of all articles in bytes?'},
-    {a: 'content', m: 'Articles with most edits', q: 'What articles have the most edits?'},
-    {a: 'content', m: 'Articles with most contributors', q: 'What are the articles with the most contributors?'},
-    {a: 'content', m: 'Reference Links', q: 'Where do articles link to?'},
-]
 
 export default {
   name: 'topic-explorer',
@@ -103,16 +78,16 @@ export default {
 
   computed: {
       contributingQuestions: function () {
-          return questions.filter((m) => m.f && m.a === 'contributing')
+          return config.questions.filter((m) => m.f && m.a === 'contributing')
       },
       readingQuestions: function () {
-          return questions.filter((m) => m.f && m.a === 'reading')
+          return config.questions.filter((m) => m.f && m.a === 'reading')
       },
       contentQuestions: function () {
-          return questions.filter((m) => m.f && m.a === 'content')
+          return config.questions.filter((m) => m.f && m.a === 'content')
       },
       moreQuestions: function () {
-          return questions.filter((m) => !m.f)
+          return config.questions.filter((m) => !m.f)
       }
   },
 
@@ -182,7 +157,6 @@ export default {
 .ui.blue.button {
     background-color: #3366cc!important;
     width: 78px;
-
 }
 
 .ui.simple.dropdown.right.labeled.search.icon.button h4 {
