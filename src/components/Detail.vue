@@ -6,6 +6,9 @@
             <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
             <p>
                 <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
+                <div class="add wiki design">
+                    "Add another Wiki" is not implemented in the prototype.  But you can see how it would work in <a target="_new" href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Detail+Page+Two+Wiki+comparison.png">the design here</a> and <a href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Wiki+Selector.png" target="_new">here</a>.
+                </div>
             </p>
         </div>
 
@@ -70,7 +73,6 @@
                         </span>
                         <div class="menu">
                             <div class="item"
-                                :class="{disabled: ['bar', 'table'].indexOf(t.chart) < 0}"
                                  v-for="t in chartTypes" :key="t.chart"
                                  @click="changeChart(t)">
                                  <i :class="t.icon" class="chart icon"></i>
@@ -268,7 +270,7 @@ export default {
         },
 
         addAnotherWiki () {
-            alert('Not in the prototype yet')
+            $('.add.wiki.design').toggle('highlight')
         },
 
         viewMoreMetrics () {
@@ -450,5 +452,9 @@ export default {
 .ui.blue.button {
     background-color: #3366cc!important;
     width: 78px;
+}
+
+.add.wiki.design {
+    display: none;
 }
 </style>
