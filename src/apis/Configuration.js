@@ -47,6 +47,14 @@ const fakeSeries = [
     { month: 'October 2017', metric: 100000 },
     { month: 'November', metric: 120340 }
 ]
+const fakeDailySeries = Array.from({ length: 100 }, (el, index) => ({
+    day: new Date(2015, 10, index + 1),
+    metric: 200 + Math.random() * 600 + index
+}))
+const detailDailySeries = Array.from({ length: 365 }, (el, index) => ({
+    day: new Date(2015, 10, index + 1),
+    metric: 40000000 + (Math.random() * 30000000) + (index % 30) * 40000
+}))
 const detailSeries = [
     { month: '2014-12-01', total: 80000,
         breakdowns: {
@@ -310,16 +318,16 @@ const metrics = {
     },
     'unique-devices': {
         fullName: 'Unique Devices',
-        type: 'bars',
+        type: 'lines',
         area: 'reading',
-        series: fakeSeries,
+        series: fakeDailySeries,
         changeMoM: 3,
         changeYoY: -0.5,
         lastMonth: 'November',
         lastMonthValue: 4921109000,
         lastYear: 2016,
         lastYearValue: 20101345234,
-        detail: detailSeries
+        detail: detailDailySeries
     },
     'most-viewed-articles': {
         fullName: 'Most Viewed Articles',
@@ -384,7 +392,7 @@ export default {
                 { lightColor: lightColor[area] },
                 { darkColor: darkColor[area] }
             )
-            setTimeout(() => resolve(result), Math.random() * 1000)
+            setTimeout(() => resolve(result), Math.random() * 500)
         })
 
         return promise

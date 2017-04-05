@@ -34,6 +34,7 @@ export default {
     },
 
     mounted () {
+        $('body').scrollTop(0)
         this.load()
     },
 

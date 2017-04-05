@@ -5,8 +5,13 @@
         :data="metricData">
     </metric-bar-widget>
 
+    <metric-line-widget
+        v-else-if="metricData.type === 'lines'"
+        :data="metricData">
+    </metric-line-widget>
+
     <metric-list-widget
-        v-if="metricData.type === 'list'"
+        v-else-if="metricData.type === 'list'"
         :data="metricData">
     </metric-list-widget>
 </router-link>
@@ -14,6 +19,7 @@
 
 <script>
 import MetricBarWidget from './MetricBarWidget'
+import MetricLineWidget from './MetricLineWidget'
 import MetricListWidget from './MetricListWidget'
 import config from '../apis/Configuration'
 
@@ -29,6 +35,7 @@ export default {
 
     components: {
         MetricBarWidget,
+        MetricLineWidget,
         MetricListWidget,
     },
 

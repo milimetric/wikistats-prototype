@@ -86,7 +86,7 @@
 
         <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
 
-        <div class="ui center aligned basic segment" v-if="metricData.type === 'bars'">
+        <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
             <time-range-selector></time-range-selector>
             <h5>
                 Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
@@ -213,22 +213,36 @@ export default {
     },
 
     watch: {
-        'metric': 'loadData',
+        'metric': function () {
+            this.loadData()
+            this.filterChartTypes()
+        },
         'metricData.type': function () {
-            this.chartTypes = this.availableChartTypes.filter((c) =>
-                this.metricData.type === 'bars' || c.chart === 'table'
-            )
-            this.chartType = this.chartTypes[0].chart
-            this.chartIcon = this.chartTypes[0].icon
+            this.filterChartTypes()
         }
     },
 
     mounted () {
+        $('body').scrollTop(0)
         this.loadData()
         $('.ui.metrics.modal').modal()
     },
 
     methods: {
+        filterChartTypes () {
+            const self = this
+
+            self.chartTypes = self.availableChartTypes.filter(function (c) {
+                if (!self.metricData) { return false; }
+                if (self.metricData.type === 'bars') { return c.chart !== 'line' }
+                if (self.metricData.type === 'lines') { return c.chart === 'line' }
+                return c.chart === 'table'
+            })
+
+            self.chartType = self.chartTypes[0].chart
+            self.chartIcon = self.chartTypes[0].icon
+        },
+
         wikiSelected (wiki) {
             this.$emit('wiki', wiki)
         },
@@ -240,7 +254,6 @@ export default {
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
-                self.chartTypes = self.availableChartTypes
             })
 
             config.metrics(this.area).then(function (result) {

@@ -23,7 +23,6 @@ import TopNav from './components/TopNav'
 import TopicExplorer from './components/TopicExplorer'
 import SiteLanguage from './components/SiteLanguage'
 import BottomFooter from './components/BottomFooter'
-import ScrollTo from './components/ScrollTo'
 
 export default {
     name: 'app',
@@ -44,7 +43,6 @@ export default {
         TopicExplorer,
         SiteLanguage,
         BottomFooter,
-        ScrollTo,
     },
     methods: {
         wikiSelected (wiki) {
