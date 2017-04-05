@@ -60,7 +60,7 @@ export default {
                       height = n.offsetHeight - margin.top - margin.bottom - padding,
                       x = scales.scaleTime().rangeRound([0, width]),
                       y = scales.scaleLinear().rangeRound([height, 0]),
-                      xW = scales.scaleBand().align(0).padding(0.85),
+                      xW = scales.scaleBand().align(0).padding(0.92),
                       dates = data.detail.map((d) => new Date(Date.parse(d.month)))
 
                 x.domain(arr.extent(dates))

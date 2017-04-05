@@ -6,15 +6,15 @@ const colors = {
     content: ['#fff1c6', '#f9df90', '#ffcc33', '#ddad1c']
 }
 const stableColorIndexes = {
-    'Lightly Active': 1,
-    'Active': 2,
-    'Very Active': 3
+    'Lightly Active': 0,
+    'Active': 1,
+    'Very Active': 2
 }
 
 const lightColor = {
     contributing: colors.contributing[0],
     reading: colors.reading[0],
-    content: colors.content[0]
+    content: colors.content[1]
 }
 const darkColor = {
     contributing: colors.contributing[3],
@@ -22,20 +22,97 @@ const darkColor = {
     content: colors.content[3]
 }
 const fakeSeries = [
-    { month: 'December', metric: 80000 },
-    { month: 'January', metric: 90000 },
-    { month: 'February', metric: 100000 },
-    { month: 'March', metric: 120340 },
-    { month: 'April', metric: 100000 },
-    { month: 'May', metric: 120340 },
-    { month: 'June', metric: 100000 },
-    { month: 'July', metric: 120340 },
-    { month: 'August', metric: 100000 },
-    { month: 'September', metric: 120340 },
-    { month: 'October', metric: 100000 },
+    { month: 'December 2015', metric: 60000 },
+    { month: 'January 2016', metric: 70000 },
+    { month: 'February 2016', metric: 80000 },
+    { month: 'March 2016', metric: 100340 },
+    { month: 'April 2016', metric: 80000 },
+    { month: 'May 2016', metric: 100340 },
+    { month: 'June 2016', metric: 80000 },
+    { month: 'July 2016', metric: 100340 },
+    { month: 'August 2016', metric: 80000 },
+    { month: 'September 2016', metric: 100340 },
+    { month: 'October 2016', metric: 80000 },
+    { month: 'November 2016', metric: 100340 },
+    { month: 'December 2016', metric: 80000 },
+    { month: 'January 2017', metric: 90000 },
+    { month: 'February 2017', metric: 100000 },
+    { month: 'March 2017', metric: 120340 },
+    { month: 'April 2017', metric: 100000 },
+    { month: 'May 2017', metric: 120340 },
+    { month: 'June 2017', metric: 100000 },
+    { month: 'July 2017', metric: 120340 },
+    { month: 'August 2017', metric: 100000 },
+    { month: 'September 2017', metric: 120340 },
+    { month: 'October 2017', metric: 100000 },
     { month: 'November', metric: 120340 }
 ]
 const detailSeries = [
+    { month: '2014-12-01', total: 80000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 70000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-01-01', total: 90000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 80000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-02-01', total: 100000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-03-01', total: 120340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
+        }
+    },
+    { month: '2015-04-01', total: 100000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-05-01', total: 120340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
+        }
+    },
+    { month: '2015-06-01', total: 100000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-07-01', total: 120340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
+        }
+    },
+    { month: '2015-08-01', total: 100000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-09-01', total: 120340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
+        }
+    },
+    { month: '2015-10-01', total: 100000,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10000, 'Active': 90000, 'Very Active': 22000 }
+        }
+    },
+    { month: '2015-11-01', total: 120340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 100000, 'Very Active': 38000 }
+        }
+    },
+    { month: '2015-12-01', total: 130340,
+        breakdowns: {
+            'Activity Level': { 'Lightly Active': 10340, 'Active': 110000, 'Very Active': 38000 }
+        }
+    },
     { month: '2015-12-01', total: 80000,
         breakdowns: {
             'Activity Level': { 'Lightly Active': 10000, 'Active': 70000, 'Very Active': 22000 }
@@ -110,8 +187,8 @@ const questions = [
     { f: true, a: 'contributing', m: 'Active Editors', q: 'How many active editors are there?' },
     { a: 'contributing', m: 'Total editors', q: 'How many editors are there?' },
     { a: 'contributing', m: 'Editors by language', q: 'How many editors are there in the most populated countries?' },
-    { f: true, a: 'contributing', m: 'Total Edits', q: 'How many edits have been made?' },
-    { a: 'contributing', m: 'Non-bot edits', q: 'How many edits have been made by registered human users?' },
+    { a: 'contributing', m: 'Total Edits', q: 'How many edits have been made?' },
+    { f: true, a: 'contributing', m: 'Non-bot edits', q: 'How many edits have been made by registered human users?' },
     { a: 'contributing', m: 'Anonymous edits', q: 'How many edits have been made by anonymous users?' },
     { a: 'contributing', m: 'Edits per article', q: 'How many edits does an article receive on average?' },
     { a: 'contributing', m: 'Top edited articles', q: 'What are the most edited articles?' },
@@ -124,6 +201,7 @@ const questions = [
     { f: true, a: 'content', m: 'Total Articles', q: 'How many articles are there?' },
     { f: true, a: 'content', m: 'Media Uploads', q: 'How much media is there (video, sound, images)?' },
     { f: true, a: 'content', m: 'New articles', q: 'How many new articles are added?' },
+    { a: 'content', m: 'Top Article Creators', q: 'Who are the top article creators?' },
     { a: 'content', m: 'Article size (bytes)', q: 'What is the size of all articles in bytes?' },
     { a: 'content', m: 'Articles with most edits', q: 'What articles have the most edits?' },
     { a: 'content', m: 'Articles with most contributors', q: 'What are the articles with the most contributors?' },
@@ -154,7 +232,7 @@ const areasWithMetrics = _.transform(questions, function (result, q) {
 const mainMetricsByArea = [
 
     { state: { id: 'contributing', name: 'Contributing', metrics: [
-        'total-edits',
+        'non-bot-edits',
         'active-editors',
         'top-contributors'
     ] }},
@@ -170,8 +248,8 @@ const mainMetricsByArea = [
     ] }}
 ]
 const metrics = {
-    'total-edits': {
-        fullName: 'Total Edits',
+    'non-bot-edits': {
+        fullName: 'Non-bot edits',
         type: 'bars',
         area: 'contributing',
         series: fakeSeries,

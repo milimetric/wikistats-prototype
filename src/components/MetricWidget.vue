@@ -88,6 +88,7 @@ export default {
     margin-bottom: 8px;
 }
 .ui.medium.statistic > .value {
+    text-align: left;
     font-size: 50px!important;
     font-weight: bold!important;
 }
@@ -95,6 +96,7 @@ export default {
     margin-bottom: 0;
 }
 .ui.small.horizontal.statistic > .value {
+    text-align: left;
     font-size: 25px!important;
     font-weight: bold!important;
 }

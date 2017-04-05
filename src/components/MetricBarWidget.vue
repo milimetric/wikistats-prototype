@@ -2,7 +2,7 @@
 <div>
     <div class="ui medium statistic">
         <div class="label">{{data.fullName}}</div>
-        <div class="value">{{data.lastMonthValue | thousands}}</div>
+        <div class="value">{{data.lastMonthValue | kmb}}</div>
     </div>
     <div>
         <span class="subdued">{{data.lastMonth}}</span>
