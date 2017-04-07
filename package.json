@@ -15,7 +15,8 @@
     "numeral": "^2.0.4",
     "semantic-ui": "^2.2.9",
     "vue": "^2.2.1",
-    "vue-router": "^2.2.0"
+    "vue-router": "^2.2.0",
+    "wmui-base": "wikimedia/WikimediaUI-Base"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
