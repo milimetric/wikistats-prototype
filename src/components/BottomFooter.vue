@@ -11,7 +11,7 @@
     </div>
     <div class="row">
         <div class="eight wide middle aligned column">
-            <p>To the extent possible under law, The Wikimedia Foundation has waived all copyright and related or neighboring rights the data and charts on this site.</p>
+            <p>All data, charts, and other content is available under the <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_new">Creative Commons CC0 dedication.</a></p>
         </div>
     </div>
 </section>
