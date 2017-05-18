@@ -1,17 +1,22 @@
+const webpackConfig = require('./webpack.config.js');
+
+const testConfiguration = {
+    browsers: ['Chrome'],
+
+    frameworks: ['jasmine'],
+
+    files: [
+        './test/index.js'
+    ],
+
+    webpack: webpackConfig,
+
+    preprocessors: {
+        'test/index.js': ['webpack']
+    }
+}
+
 module.exports = function (config) {
-    config.set({
-        browsers: ['Chrome'],
-        frameworks: ['jasmine'],
-        files: [
-            {
-                pattern: 'test/*.spec.js',
-                watched: false
-            },
-            {
-                pattern: 'test/**/*.spec.js',
-                watched: false
-            }
-        ]
-    })
+    config.set(testConfiguration)
     return config;
 }

@@ -1,46 +1,47 @@
 {
-  "name": "wikistats",
-  "version": "0.0.1",
-  "description": "New version of wikistats, using Vue and Semantic UI",
-  "main": "index.js",
-  "scripts": {
-      "dev": "./node_modules/webpack/bin/webpack.js --progress --watch",
-      "server": "python -m SimpleHTTPServer 5000"
-  },
-  "dependencies": {
-    "d3": "^4.7.1",
-    "jquery": "^3.2.1",
-    "lodash": "^4.17.4",
-    "semantic-ui": "^2.2.9",
-    "vue": "^2.2.1",
-    "vue-router": "^2.2.0",
-    "wmui-base": "wikimedia/WikimediaUI-Base"
-  },
-  "devDependencies": {
-    "babel-core": "^6.24.1",
-    "babel-loader": "^7.0.0",
-    "css-loader": "^0.28.1",
-    "html-webpack-plugin": "^2.28.0",
-    "jasmine-core": "^2.6.2",
-    "karma": "^1.7.0",
-    "karma-chrome-launcher": "^2.1.1",
-    "karma-jasmine": "^1.1.0",
-    "vue-loader": "^12.0.4",
-    "vue-template-compiler": "^2.3.3",
-    "webpack": "^2.5.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/milimetric/wikistats-prototype.git"
-  },
-  "test": "./node_modules/karma/bin/karma start",
-  "keywords": [
-    "Mediawiki",
-    "Wikimedia",
-    "Wikistats",
-    "Stats"
-  ],
-  "author": "Dan and Fran",
-  "license": "MIT",
-  "homepage": "https://github.com/milimetric/wikistats-prototype#readme"
+    "name": "wikistats",
+    "version": "0.0.1",
+    "description": "New version of wikistats, using Vue and Semantic UI",
+    "main": "index.js",
+    "scripts": {
+        "dev": "./node_modules/webpack/bin/webpack.js --progress --watch",
+        "server": "python -m SimpleHTTPServer 5000",
+        "test": "./node_modules/karma/bin/karma start"
+    },
+    "dependencies": {
+        "d3": "^4.7.1",
+        "jquery": "^3.2.1",
+        "lodash": "^4.17.4",
+        "semantic-ui": "^2.2.9",
+        "vue": "^2.2.1",
+        "vue-router": "^2.2.0",
+        "wmui-base": "wikimedia/WikimediaUI-Base"
+    },
+    "devDependencies": {
+        "babel-core": "^6.24.1",
+        "babel-loader": "^7.0.0",
+        "css-loader": "^0.28.1",
+        "html-webpack-plugin": "^2.28.0",
+        "jasmine-core": "^2.6.2",
+        "karma": "^1.7.0",
+        "karma-chrome-launcher": "^2.1.1",
+        "karma-jasmine": "^1.1.0",
+        "karma-webpack": "^2.0.3",
+        "vue-loader": "^12.0.4",
+        "vue-template-compiler": "^2.3.3",
+        "webpack": "^2.5.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/milimetric/wikistats-prototype.git"
+    },
+    "keywords": [
+        "Mediawiki",
+        "Wikimedia",
+        "Wikistats",
+        "Stats"
+    ],
+    "author": "Dan and Fran",
+    "license": "MIT",
+    "homepage": "https://github.com/milimetric/wikistats-prototype#readme"
 }
