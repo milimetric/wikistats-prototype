@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "New version of wikistats, using Vue and Semantic UI",
   "main": "index.js",
+  "scripts": {
+      "dev": "./node_modules/webpack/bin/webpack.js --progress --watch",
+      "server": "python -m SimpleHTTPServer 5000"
+  },
   "dependencies": {
     "d3": "^4.7.1",
     "jquery": "^3.2.1",

@@ -15,7 +15,4 @@ export default {
 </script>
 
 <style>
-* {
-    color: white;
-}
 </style>
