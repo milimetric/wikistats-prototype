@@ -8,7 +8,7 @@ export default {
     data () {
         return {
             warning: true,
-            wiki: 'wololoWikipedia (All languages)'
+            wiki: 'Wikipedia (All languages)'
         }
     }
 }
