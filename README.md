@@ -29,8 +29,16 @@ For logic, such as models and data transformations, separate folders:
 * Internationalization: simple layer of abstraction on top of raw text
 
 
+##Wikistats 2 Frontend
 
+**To build the dev bundle and watch file changes**
 
+```
+npm run dev
+```
 
+**To run tests, watching file changes**
 
-
+```
+npm test
+```
