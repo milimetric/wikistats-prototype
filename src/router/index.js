@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dashboard from '@/components/Dashboard'
-import Detail from '@/components/Detail'
+import Dashboard from '../components/dashboard/Dashboard'
+import Detail from '../components/detail/Detail'
 
 Vue.use(Router)
 

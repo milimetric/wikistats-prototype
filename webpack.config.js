@@ -1,5 +1,7 @@
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var path = require('path');
+var utils = require('./build/utils');
+var webpack = require('webpack');
 function resolve (dir) {
     return path.join(__dirname, '..', dir)
 }
@@ -14,7 +16,7 @@ module.exports = {
         // vue-loader isn't compiling templates with the
         // default version of vue
         alias: {
-            'vue$': 'vue/dist/vue.esm.js' 
+            'vue$': 'vue/dist/vue.esm.js'
         }
     },
     module: {
@@ -28,6 +30,26 @@ module.exports = {
                 loader: 'babel-loader',
                 include: [resolve('src'), resolve('test')]
             },
+            {
+                test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
+                loader: 'url-loader',
+                query: {
+                    limit: 10000,
+                    name: utils.assetsPath('img/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
+                loader: 'url-loader',
+                query: {
+                    limit: 10000,
+                    name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+                }
+            },
+            {
+                test: /\.css$/,
+                use: [ 'style-loader', 'css-loader' ]
+            }
         ]
     },
     plugins: [
@@ -35,6 +57,12 @@ module.exports = {
             filename: 'index.html',
             template: 'index.html',
             inject: true
+        }),
+        new webpack.ProvidePlugin({
+            $ : "jquery",
+            jQuery : "jquery",
+            "window.jQuery" : "jquery",
+            "root.jQuery" : "jquery"
         })
     ],
     devServer: {
