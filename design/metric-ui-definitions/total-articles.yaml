@@ -1,0 +1,21 @@
+name: Total Articles
+id: total-articles
+type: timeseries
+
+dimensions:
+
+additional-info:
+
+time:
+    - granularity: day | month
+    - start: 
+    - end: 
+
+defaults:
+    dimensions:
+    # ISO 8601 format for intervals
+    time:
+        - start: PT0
+        - end: PTNOW
+    granularity:
+        - monthly
