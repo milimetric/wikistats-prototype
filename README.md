@@ -17,11 +17,11 @@ For logic, such as models and data transformations, separate folders:
 
 =Project Plan=
 * Working time: 14:00 -> 17:00 CEST
-* URI Scheme for front-end (how we make things bookmarkable)
 * Schema: Metric configuration for UI
 * Vertical Slice Decision: Active Editors, Pageviews, Unique Devices, Total Articles
 * Schema: Metric query to the API
 * URI Scheme for AQS, mock it return fake data for initial work?
+* URI Scheme for front-end (how we make things bookmarkable)
 * Decide how to implement the various widgets (like dashboard vs. detail ones, different visualizations, does it make sense together)
 * Mechanical: implement all widgets
 * Mechanical: reuse (by breaking up)? most of the dashboard and detail from prototype?

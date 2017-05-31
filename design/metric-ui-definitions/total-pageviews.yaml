@@ -1,13 +1,21 @@
 name: Pageviews
 id: pageviews
 type: timeseries
+description: ...
+definitionArticle: ...
 deduplicateAcrossProjects: false
 
 dimensions:
+    - project:
+        - all
+        - all-{projects}
+        - {projects}
     - agentType:
+        - all
         - bot
         - human
     - accessSite:
+        - all
         - desktop
         - mobile
         - mobile-web
