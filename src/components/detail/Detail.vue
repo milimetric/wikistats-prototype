@@ -87,7 +87,7 @@
         <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
 
         <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
-            <time-range-selector></time-range-selector>
+            <time-range-selector v-on:changeTimeRange='setTimeRange'></time-range-selector>
             <h5>
                 Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
             </h5>
@@ -222,6 +222,9 @@ export default {
         },
         'metricData.type': function () {
             this.filterChartTypes()
+        },
+        'metricData.range': function () {
+            this.loadData();
         }
     },
 
@@ -257,6 +260,22 @@ export default {
             config.metricData(this.metric, this.area).then(function (result) {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
+                let url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/' +
+                            'aggregate/all-projects/all-access/all-agents/' +
+                            'monthly/{{start}}/{{end}}';
+                url = url.replace('{{start}}', self.metricData.range[0])
+                   .replace('{{end}}', self.metricData.range[1])
+                $.get(url, function (data) {
+                    const formattedData = data.items.map((item) => {
+                        return {
+                            month: item.timestamp.slice(0,4) + '-'
+                                + item.timestamp.slice(4,6) + '-'
+                                + item.timestamp.slice(6,8),
+                            total: item.views
+                        }
+                    })
+                    self.metricData.detail = formattedData;
+                })
             })
 
             config.metrics(this.area).then(function (result) {
@@ -301,6 +320,9 @@ export default {
             const h = this.highlightMetric
             router.push('/' + h.area + '/' + h.name)
             $('.ui.metrics.modal').modal('hide')
+        },
+        setTimeRange (newRange) {
+            this.metricData.range = newRange;
         }
     },
 }
