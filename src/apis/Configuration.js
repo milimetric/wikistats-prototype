@@ -314,7 +314,8 @@ const metrics = {
         lastMonthValue: 7741345234,
         lastYear: 2016,
         lastYearValue: 25341345234,
-        detail: detailSeries
+        detail: detailSeries,
+        range: ['2015053100', '2017053100']
     },
     'unique-devices': {
         fullName: 'Unique Devices',
