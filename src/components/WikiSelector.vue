@@ -11,6 +11,7 @@
 
 <script>
 import '../../semantic/src/definitions/modules/search.js';
+import Sitematrix from '../apis/Sitematrix'
 
 export default {
     name: 'wiki-selector',
@@ -18,29 +19,19 @@ export default {
 
     mounted () {
         const self = this
-
-        $('.ui.search').search({
-            onSelect (wiki) {
-                self.$emit('wiki', wiki.title)
-                $('.ui.search', self.$el).removeClass('focus')
-            },
-            source: [
-                { title: 'Commons' },
-                { title: 'Wikibooks (All languages)' },
-                { title: 'Wikidata' },
-                { title: 'Wikinews (All languages)' },
-                { title: 'Wikipedia (All languages)' },
-                { title: 'Wikiquote (All languages)' },
-                { title: 'Wikisource (All languages)' },
-                { title: 'Wikispecies (All languages)' },
-                { title: 'Wikiversity (All languages)' },
-                { title: 'Wikivoyage (All languages)' },
-                { title: 'Wiktionary (All languages)' },
-            ],
-            searchFields   : [
-                'title'
-            ],
-            searchFullText: true,
+        var sitematrix = new Sitematrix();
+        sitematrix.getWikiList().done(function (data) {
+            $('.ui.search').search({
+                onSelect (wiki) {
+                    self.$emit('wiki', wiki.title)
+                    $('.ui.search', self.$el).removeClass('focus')
+                },
+                source: data,
+                searchFields   : [
+                    'title'
+                ],
+                searchFullText: true
+            })
         })
     }
 }
