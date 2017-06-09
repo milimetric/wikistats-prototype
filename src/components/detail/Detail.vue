@@ -55,7 +55,7 @@
         <div class="ui clearing basic segment">
             <h2 class="ui left floated header">
                 {{metricData.fullName || 'No data yet... '}}
-                <span class="subdued">{{wiki.replace(' (All languages)', '')}}</span>
+                <span class="subdued">{{wiki.title}}</span>
             </h2>
 
             <div class="ui right floated basic fudge segment">
@@ -250,7 +250,8 @@ export default {
         },
 
         wikiSelected (wiki) {
-            this.$emit('wiki', wiki)
+            this.$emit('wiki', wiki);
+            this.loadData();
         },
         loadData () {
             const self = this
@@ -261,10 +262,11 @@ export default {
                 self.metricData = result
                 self.breakdowns = result.breakdowns
                 let url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/' +
-                            'aggregate/all-projects/all-access/all-agents/' +
+                            'aggregate/{{wiki}}/all-access/all-agents/' +
                             'monthly/{{start}}/{{end}}';
                 url = url.replace('{{start}}', self.metricData.range[0])
-                   .replace('{{end}}', self.metricData.range[1])
+                         .replace('{{end}}', self.metricData.range[1])
+                         .replace('{{wiki}}', self.wiki.urlName)
                 $.get(url, function (data) {
                     const formattedData = data.items.map((item) => {
                         return {

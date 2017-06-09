@@ -2,7 +2,7 @@
 <div>
     <div class="ui search">
         <div class="ui icon input">
-            <input class="prompt" type="text" :placeholder="single ? 'Choose a Wiki' : 'Add another Wiki'" :value="wiki"/>
+            <input class="prompt" type="text" :placeholder="single ? 'Choose a Wiki' : 'Add another Wiki'" :value="wiki.title"/>
             <i class="search icon"></i>
         </div>
     </div>
@@ -23,7 +23,7 @@ export default {
         sitematrix.getWikiList().done(function (data) {
             $('.ui.search').search({
                 onSelect (wiki) {
-                    self.$emit('wiki', wiki.title)
+                    self.$emit('wiki', wiki)
                     $('.ui.search', self.$el).removeClass('focus')
                 },
                 source: data,
