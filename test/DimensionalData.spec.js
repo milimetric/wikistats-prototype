@@ -50,6 +50,9 @@ describe('DimensionalData', function () {
         let dim = new DimensionalData(pageviews1)
         let merged = dim.merge(pageviews2)
 
+        dim.measure('views')
+        merged.measure('views')
+
         expect(dim.breakdown('date')['2017-01']).toEqual(10)
         expect(merged.breakdown('date')['2017-01']).toEqual(11)
     });
@@ -57,6 +60,8 @@ describe('DimensionalData', function () {
     it('should break down by two columns in order', function () {
         let dim = new DimensionalData(pageviews1)
         let merged = dim.merge(pageviews2)
+
+        merged.measure('views')
 
         expect(merged.breakdown('date', 'agent')['2017-01']['spider']).toEqual(1)
         expect(merged.breakdown('agent', 'date')['spider']['2017-01']).toEqual(1)
