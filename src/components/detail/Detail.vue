@@ -4,12 +4,6 @@
         <div class="wikis">
             <h3 class="header">Wiki</h3>
             <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
-            <p>
-                <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
-                <div class="add wiki design">
-                    "Add another Wiki" is not implemented in the prototype.  But you can see how it would work in <a target="_new" href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Detail+Page+Two+Wiki+comparison.png">the design here</a> and <a href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Wiki+Selector.png" target="_new">here</a>.
-                </div>
-            </p>
         </div>
 
         <div class="ui clearing divider"></div>
@@ -52,39 +46,14 @@
         </div>
     </section>
     <section class="graph panel">
-        <div class="ui clearing basic segment">
-            <h2 class="ui left floated header">
-                {{metricData.fullName || 'No data yet... '}}
-                <span class="subdued">{{wiki.title}}</span>
-            </h2>
-
-            <div class="ui right floated basic fudge segment">
-                <simple-legend v-if="chartType === 'bar'" class="simple legend" :data="metricData"></simple-legend>
-                <div class="ui right floated icon buttons">
-
-                    <button class="ui icon button" title="Download">
-                        <i class="download icon"></i>
-                    </button>
-                    <div class="ui simple dropdown right labeled icon button"
-                         title="Change Chart">
-                        <i class="ui dropdown icon"/>
-                        <span>
-                            <i :class="chartIcon" class="chart icon"></i>
-                        </span>
-                        <div class="menu">
-                            <div class="item"
-                                 v-for="t in chartTypes" :key="t.chart"
-                                 @click="changeChart(t)">
-                                 <i :class="t.icon" class="chart icon"></i>
-                                 {{t.chart}}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
+        <graph-panel
+            :metricData='metricData'
+            :chartType='chartType'
+            :wiki='wiki'
+            :chartTypes='chartTypes'
+            :chartIcon='chartIcon'
+            :breakdowns='breakdowns'
+        />
 
         <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
             <time-range-selector v-on:changeTimeRange='setTimeRange'></time-range-selector>
@@ -104,27 +73,12 @@
         </div>
     </section>
 
-    <div class="ui metrics modal">
-        <i class="close icon"></i>
-        <div class="header">
-            All Metrics
-            <div class="subdued">Select a metric to visualize and explore its data</div>
-        </div>
-        <div class="ui three column grid">
-            <div class="column" v-for="a in areasWithMetrics">
-                <h4 :class="a.name" :style="{ borderBottom: '2px solid ' + a.color }">{{a.name}}</h4>
-                <div v-for="m in a.metrics" :key="m.name"
-                             class="ui line label"
-                             :class="{active: m.name === highlightMetric.name}"
-                             @click="changeHighlight(m.name, a.name)">
-                    {{m.fullName}}
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui blue button" @click="goHighlight">Go</div>
-        </div>
-    </div>
+    <metrics-modal
+        :areasWithMetrics="areasWithMetrics"
+        :highlightMetric="highlightMetric"
+        @changeMetric="goHighlight">
+
+    </metrics-modal>
 </section>
 </template>
 
@@ -133,12 +87,9 @@ import WikiSelector from '../WikiSelector'
 import SimpleLegend from './SimpleLegend'
 import ArrowIcon from '../ArrowIcon'
 import TimeRangeSelector from '../TimeRangeSelector'
+import MetricsModal from './MetricsModal'
 
-import BarChart from './chart/BarChart'
-import LineChart from './chart/LineChart'
-import MapChart from './chart/MapChart'
-import TableChart from './chart/TableChart'
-import EmptyChart from './chart/EmptyChart'
+import GraphPanel from './GraphPanel'
 
 import config from '../../apis/Configuration'
 import router from '../../router/index'
@@ -154,12 +105,8 @@ export default {
         SimpleLegend,
         ArrowIcon,
         TimeRangeSelector,
-
-        BarChart,
-        LineChart,
-        MapChart,
-        TableChart,
-        EmptyChart,
+        MetricsModal,
+        GraphPanel,
     },
     data () {
         return {
@@ -193,9 +140,6 @@ export default {
     },
 
     computed: {
-        chartComponent: function () {
-            return (this.chartType || 'empty') + '-chart'
-        },
         area: function () {
             return this.$route.params ? this.$route.params.area : 'loading ...'
         },
@@ -323,6 +267,7 @@ export default {
             router.push('/' + h.area + '/' + h.name)
             $('.ui.metrics.modal').modal('hide')
         },
+
         setTimeRange (newRange) {
             this.metricData.range = newRange;
         }
@@ -366,39 +311,6 @@ export default {
     border: 1px solid #aaa9a9!important;
     border-radius: 4px;
     padding-right: 32px!important;
-}
-
-.graph.panel {
-    background-color: #FFFFFF;
-    flex: 1;
-    border-radius: 0 10px 10px 0;
-    padding-bottom: 8px;
-}
-
-.graph.panel h2.header {
-    margin-left: 10px;
-    font-size: 20px;
-    font-weight: 500;
-}
-.graph.panel h2.header .subdued {
-    margin-left: 4px;
-    font-size: 18px;
-    color: #777;
-    font-weight: 300;
-}
-.graph.panel .ui.right.floated.buttons {
-    border: solid 1px #d4d4d5;
-    border-radius: 4px;
-}
-.graph.panel .ui.right.floated.buttons .button {
-    border-right: solid 1px #d4d4d5;
-}
-.graph.panel .ui.right.floated.buttons .button:last-child {
-    border-right: none;
-}
-
-.graph.panel p {
-    margin: 0;
 }
 
 .clearing.basic.segment { padding: 0; }
@@ -451,47 +363,6 @@ export default {
     margin-right: 10px;
     margin-top: 5px;
     display: inline-block;
-}
-
-.ui.metrics.modal {
-    /* width: 685px; looks a little better bigger */
-    width: 780px;
-    left: 700px;
-}
-.ui.metrics.modal .header {
-    font-weight: bold;
-    border: none;
-    padding-bottom: 10px;
-}
-.ui.metrics.modal .actions {
-    border: none;
-    background-color: #fff;
-}
-.ui.metrics.modal .ui.grid {
-    padding: 14px 28px;
-}
-
-.ui.metrics.modal i.close.icon {
-    position: relative;
-    top: initial;
-    right: initial;
-    float: right;
-    color: #bababa;
-}
-.ui.metrics.modal .header .subdued {
-    font-size: 13px;
-    font-weight: normal;
-}
-
-.ui.metrics.modal .column h4 {
-    text-transform: capitalize;
-    font-size: 17px;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
-}
-.ui.blue.button {
-    background-color: #3366cc!important;
-    width: 78px;
 }
 
 .add.wiki.design {
