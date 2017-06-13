@@ -37,14 +37,12 @@ describe('DimensionalData', function () {
 
     it('should return the sum value for a set of records', function () {
         let dim = new DimensionalData(values);
-        expect(dim.getSumForColumn('val')).toEqual(466);
+        expect(dim.total('val')).toEqual(466);
     });
 
     it('should merge results', function () {
         let dim = new DimensionalData(pageviews1)
-        let merged = dim.merge(pageviews2)
-
-        // wanna use "total" as a verb instead of getSumForColumn?
-        expect(merged.total('views')).toEqual(110)
+        dim.merge(pageviews2)
+        expect(dim.total('views')).toEqual(110)
     });
 })
