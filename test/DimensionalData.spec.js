@@ -66,4 +66,20 @@ describe('DimensionalData', function () {
         expect(merged.breakdown('date', 'agent')['2017-01']['spider']).toEqual(1)
         expect(merged.breakdown('agent', 'date')['spider']['2017-01']).toEqual(1)
     });
+
+    it('should report unique values in a column', function () {
+        let dim = new DimensionalData(pageviews1)
+
+        expect(dim.unique('date')).toEqual(['2017-01', '2017-02', '2017-03', '2017-04'])
+    });
+
+    it('should filter to include only a list of values in a column', function () {
+        let dim = new DimensionalData(pageviews1)
+
+        dim.filter('date', ['2017-02'])
+        dim.measure('views')
+
+        // NOTE: alternative way to use total - after setting 'measure'
+        expect(dim.total()).toEqual(20)
+    });
 })
