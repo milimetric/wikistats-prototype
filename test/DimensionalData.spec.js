@@ -21,14 +21,6 @@ const pageviews3 = [
     { date: '2017-04', agent: 'user', access: 'mobile', views: 45 },
 ]
 
-const values = [
-    { 'name': 'manolo', val: 20 },
-    { 'name': 'alberto', val: 12 },
-    { 'name': 'jonas', val: 423 },
-    { 'name': 'severo', val: 10 },
-    { 'name': 'jose antonio', val: 1 },
-]
-
 describe('DimensionalData', function () {
     it('should be able to return its crossfilter instance', function () {
         let dim = new DimensionalData();
@@ -36,8 +28,8 @@ describe('DimensionalData', function () {
     });
 
     it('should return the sum value for a set of records', function () {
-        let dim = new DimensionalData(values);
-        expect(dim.total('val')).toEqual(466);
+        let dim = new DimensionalData(pageviews1);
+        expect(dim.total('views')).toEqual(100);
     });
 
     it('should merge results', function () {
