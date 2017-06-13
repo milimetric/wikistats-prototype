@@ -1,18 +1,4 @@
-import Crossfilter from 'crossfilter';
-
-class DimensionalData {
-    constructor(values) {
-        this.crossfilter = values ? new Crossfilter(values) : new Crossfilter();
-    }
-    getCrossfilter () {
-        return this.crossfilter;
-    }
-    getSumForColumn (column) {
-        return this.crossfilter.groupAll().reduceSum((row) => {
-            return row[column];
-        }).value();
-    }
-}
+import DimensionalData from '../src/models/DimensionalData'
 
 describe('DimensionalData', function () {
     it('should be able to return its crossfilter instance', function () {
