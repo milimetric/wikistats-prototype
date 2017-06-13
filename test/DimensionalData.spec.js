@@ -47,4 +47,20 @@ describe('DimensionalData', function () {
         // wanna use "total" as a verb instead of getSumForColumn?
         expect(merged.total('views')).toEqual(110)
     });
+
+    it('should break down by any column', function () {
+        let dim = new DimensionalData(pageviews1)
+        let merged = dim.merge(pageviews2)
+
+        expect(dim.breakdown('date')['2017-01']).toEqual(10)
+        expect(merged.breakdown('date')['2017-01']).toEqual(11)
+    });
+
+    it('should break down by two columns in order', function () {
+        let dim = new DimensionalData(pageviews1)
+        let merged = dim.merge(pageviews2)
+
+        expect(merged.breakdown('date', 'agent')['2017-01']['spider']).toEqual(1)
+        expect(merged.breakdown('agent', 'date')['spider']['2017-01']).toEqual(1)
+    });
 })
