@@ -3,6 +3,7 @@ import DimensionalData from '../src/models/DimensionalData'
 const pageviews1 = [
     { date: '2017-01', agent: 'user', access: 'desktop', views: 10 },
     { date: '2017-02', agent: 'user', access: 'desktop', views: 20 },
+    { date: '2017-01', agent: 'user', access: 'desktop', views: 25 },
     { date: '2017-03', agent: 'user', access: 'desktop', views: 30 },
     { date: '2017-04', agent: 'user', access: 'desktop', views: 40 },
 ]
@@ -31,24 +32,24 @@ describe('DimensionalData', function () {
     it('should return the sum value for a set of records', function () {
         let dim = new DimensionalData(pageviews1);
 
-        expect(dim.total('views')).toEqual(100);
+        expect(dim.total('views')).toEqual(125);
     });
 
     it('should merge results', function () {
         let dim = new DimensionalData(pageviews1)
 
         dim.merge(pageviews2)
-        expect(dim.total('views')).toEqual(110)
+        expect(dim.total('views')).toEqual(135)
     });
 
     it('should break down by any column', function () {
         let dim = new DimensionalData(pageviews1)
 
         dim.measure('views')
-        expect(dim.breakdown('date')['2017-01']).toEqual(10)
+        expect(dim.breakdown('date')['2017-01']).toEqual(35)
 
         dim.merge(pageviews2)
-        expect(dim.breakdown('date')['2017-01']).toEqual(11)
+        expect(dim.breakdown('date')['2017-01']).toEqual(36)
     });
 
     it('should break down by two columns in order', function () {
@@ -62,17 +63,15 @@ describe('DimensionalData', function () {
 
     it('should report unique values in a column', function () {
         let dim = new DimensionalData(pageviews1)
-
-        expect(dim.unique('date')).toEqual(['2017-01', '2017-02', '2017-03', '2017-04'])
+        // sorting both arrays because there's no sorting
+        // criteria for the return value of unique()
+        expect(dim.unique('date').sort()).toEqual(['2017-01', '2017-02', '2017-03', '2017-04'].sort())
     });
 
     it('should filter to include only a list of values in a column', function () {
         let dim = new DimensionalData(pageviews1)
 
-        dim.filter('date', ['2017-02'])
-        dim.measure('views')
-
-        // NOTE: alternative way to use total - after setting 'measure'
-        expect(dim.total()).toEqual(20)
+        dim.filter('date', '2017-02');
+        expect(dim.total('views')).toEqual(20)
     });
 })
