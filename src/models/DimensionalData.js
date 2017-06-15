@@ -57,6 +57,10 @@ class DimensionalData {
         this.dimensionCache[column].filterAll();
     }
 
+    clearAllFilters () {
+        Object.keys(this.dimensionCache).forEach((d) => d.filterAll());
+    }
+
     breakdown (column, secondColumn) {
         this.addDimension(column);
         let m = this.currentMeasure;
