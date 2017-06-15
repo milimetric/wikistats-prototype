@@ -61,32 +61,6 @@ class DimensionalData {
         this.addDimension(column);
         let m = this.currentMeasure;
 
-        /*
-                this.crossfilter.dimension((row) => {
-                    return row[column];
-                }).group().reduce(
-                    (p,c) => {
-                        p[c[secondColumn]] = p[c[secondColumn]]?
-                            p[c[secondColumn]] + c[this.currentMeasure]:
-                            c[this.currentMeasure];
-                        return p;
-                    },
-                    () => {},
-                    () => {
-                        return {};
-                    }
-                ).top(Infinity).reduce((p, c) => {
-                    p[c.key] = c.value;
-                    return p;
-                }, {});
-        */
-
-        // out: [
-        //    { col0: A, col1: a, col2: aa, value: x }
-        //    { col0: A, col1: b, col2: aa, value: y }
-        //    { col0: A, col1: b, col2: ab, value: z }
-        //    { col0: B, col1: a, col2: aa, value: x }
-        // ]
         var ret = this.dimensionCache[column].group().reduce(
             (b, x) => {
                 if (secondColumn) {
