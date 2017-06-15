@@ -48,10 +48,7 @@
     <section class="graph panel">
         <graph-panel
             :metricData='metricData'
-            :chartType='chartType'
             :wiki='wiki'
-            :chartTypes='chartTypes'
-            :chartIcon='chartIcon'
             :breakdowns='breakdowns'
         />
 
@@ -114,17 +111,6 @@ export default {
             areasWithMetrics: config.areasWithMetrics,
             highlightMetric: {},
 
-            // doing some exaggerated computables to test deeper chaining
-            chartTypes: [],
-            chartType: null,
-            chartIcon: 'empty',
-            availableChartTypes: [
-                { chart: 'bar', icon: 'bar' },
-                { chart: 'line', icon: 'line' },
-                { chart: 'map', icon: 'globe' },
-                { chart: 'table', icon: 'table' },
-            ],
-
             defaultMetrics: {
                 contributing: 'active-editors',
                 reading: 'total-pageviews',
@@ -161,11 +147,7 @@ export default {
 
     watch: {
         'metric': function () {
-            this.loadData()
-            this.filterChartTypes()
-        },
-        'metricData.type': function () {
-            this.filterChartTypes()
+            this.loadData();
         },
         'metricData.range': function () {
             this.loadData();
@@ -179,19 +161,6 @@ export default {
     },
 
     methods: {
-        filterChartTypes () {
-            const self = this
-
-            self.chartTypes = self.availableChartTypes.filter(function (c) {
-                if (!self.metricData) { return false; }
-                if (self.metricData.type === 'bars') { return c.chart !== 'line' }
-                if (self.metricData.type === 'lines') { return c.chart === 'line' }
-                return c.chart === 'table'
-            })
-
-            self.chartType = self.chartTypes[0].chart
-            self.chartIcon = self.chartTypes[0].icon
-        },
 
         wikiSelected (wiki) {
             this.$emit('wiki', wiki);

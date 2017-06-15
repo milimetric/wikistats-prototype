@@ -52,20 +52,46 @@ export default {
         TableChart,
         EmptyChart
     },
-    props: ['metricData', 'chartType', 'wiki', 'chartTypes', 'chartIcon', 'breakdowns'],
+    props: ['metricData', 'wiki', 'breakdowns'],
+    computed: {
+        chartComponent: function () {
+            const availableChartTypes = [
+                { chart: 'bar', icon: 'bar' },
+                { chart: 'line', icon: 'line' },
+                { chart: 'map', icon: 'globe' },
+                { chart: 'table', icon: 'table' },
+            ]
+            this.chartTypes = availableChartTypes.filter((c) => {
+                if (!this.metricData) { return false; }
+                if (this.metricData.type === 'bars') { return c.chart !== 'line' }
+                if (this.metricData.type === 'lines') { return c.chart === 'line' }
+                return c.chart === 'table'
+            });
+            this.chartIcon = this.chartTypes[0].icon
+            return (this.chartTypes[0].chart || 'empty') + '-chart'
+        },
+        breakdown: function () {
+            return (this.breakdowns || []).find((m) => m.on)
+        }
+    },
+    data () {
+        return {
+            chartTypes: [],
+            chartType: null,
+            chartIcon: 'empty',
+            availableChartTypes: [
+                { chart: 'bar', icon: 'bar' },
+                { chart: 'line', icon: 'line' },
+                { chart: 'map', icon: 'globe' },
+                { chart: 'table', icon: 'table' },
+            ]
+        }
+    },
     methods: {
         changeChart (t) {
             this.chartType = t.chart
             this.chartIcon = t.icon
         }
-    },
-    computed: {
-        chartComponent: function () {
-            return (this.chartType || 'empty') + '-chart'
-        },
-        breakdown: function () {
-            return (this.breakdowns || []).find((m) => m.on)
-        },
     }
 }
 </script>
