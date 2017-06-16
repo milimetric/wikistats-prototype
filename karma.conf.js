@@ -3,7 +3,7 @@ const webpackConfig = require('./webpack.config.js');
 const testConfiguration = {
     browsers: ['Chrome'],
 
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-ajax', 'jasmine'],
 
     files: [
         './test/index.js'
