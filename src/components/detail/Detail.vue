@@ -1,74 +1,22 @@
 <template>
 <section class="detail container" :class="{ area, fullscreen }">
-    <section class="left panel" v-if="!fullscreen">
-        <div class="wikis">
-            <h3 class="header">Wiki</h3>
-            <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
-        </div>
+    <detail-sidebar
+        v-if="!fullscreen"
+        :wiki='wiki'
+        :otherMetrics='otherMetrics'
+        :metric='metric'
+        :breakdowns='breakdowns'
+        :area='area'
+        @wikiSelected='wikiSelected'
+    />
 
-        <div class="ui clearing divider"></div>
-
-        <h3 class="header">Metrics</h3>
-
-        <router-link v-for="o in otherMetrics" :key="o.name"
-                     :to="'/' + area + '/' + o.name"
-                     class="ui line label"
-                     :class="{active: o.name === metric}">
-            {{o.fullName}}
-        </router-link>
-
-        <p>
-            <a @click.prevent="viewMoreMetrics" href="#">View more metrics</a>
-        </p>
-
-        <div v-if="breakdowns">
-        <div class="ui clearing divider"></div>
-
-            <h3 class="header">Filters and Breakdowns</h3>
-
-            <div v-for="b in breakdowns">
-                Show:
-                <label class="xui checkbox" v-for="bv in b.values">
-                    <input type="checkbox" v-model="bv.on"/>
-                    {{bv.name}}
-                </label>
-
-                <div class="ui toggle checkbox">
-                    <input type="checkbox" id="breakdown" v-model="b.on">
-                    <label for="breakdown">
-                        Breakdown
-                        <span v-if="!b.on">Off</span>
-                        <span v-if="b.on">On</span>
-                        <i class="help circle icon" title="Breakdowns help you see more detail by breaking down the total values into parts."/>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="graph panel">
-        <graph-panel
-            :metricData='metricData'
-            :wiki='wiki'
-            :breakdowns='breakdowns'
-        />
-
-        <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
-            <time-range-selector v-on:changeTimeRange='setTimeRange'></time-range-selector>
-            <h5>
-                Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
-            </h5>
-        </div>
-
-        <div class="ui center aligned subdued basic segment">
-            <p>* Definition of {{metric}} goes here, pulled from config or maybe dynamically from the wiki page.</p>
-            <p>More descriptor text will go here assuming that it takes a few sentences to explain a term for a metric.</p>
-
-        </div>
-
-        <div class="ui right floated icon button" @click="toggleFullscreen">
-            <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
-        </div>
-    </section>
+    <graph-panel
+        :metricData='metricData'
+        :wiki='wiki'
+        :breakdowns='breakdowns'
+        @changeTimeRange='setTimeRange'
+        @toggleFullscreen='toggleFullscreen'
+    />
 
     <metrics-modal
         :areasWithMetrics="areasWithMetrics"
@@ -80,16 +28,16 @@
 </template>
 
 <script>
-import WikiSelector from '../WikiSelector'
 import SimpleLegend from './SimpleLegend'
-import ArrowIcon from '../ArrowIcon'
-import TimeRangeSelector from '../TimeRangeSelector'
 import MetricsModal from './MetricsModal'
 
 import GraphPanel from './GraphPanel'
+import DetailSidebar from './DetailSidebar'
 
 import config from '../../apis/Configuration'
 import router from '../../router/index'
+import DimensionalData from '../../models/DimensionalData'
+import AQS from '../../apis/aqs'
 
 import '../../../semantic/src/definitions/modules/modal'
 import '../../../semantic/src/definitions/modules/dimmer'
@@ -98,12 +46,10 @@ export default {
     name: 'detail',
     props: ['wiki'],
     components: {
-        WikiSelector,
         SimpleLegend,
-        ArrowIcon,
-        TimeRangeSelector,
         MetricsModal,
         GraphPanel,
+        DetailSidebar
     },
     data () {
         return {
@@ -167,6 +113,20 @@ export default {
             this.loadData();
         },
         loadData () {
+            let aqsApi = new AQS();
+            aqsApi.getData({
+                project: [self.wiki.urlName],
+                access_method: ['desktop', 'mobile-web']
+            }, {
+                metric: 'pageviews-aggregate',
+                agent_type: 'user',
+                granularity: 'daily',
+                start: '20170514',
+                end: '20170614'
+            }).done(dimensionalData => {
+                debugger
+            });
+
             const self = this
 
             this.highlightMetric = { name: this.metric, area: this.area }
@@ -189,6 +149,7 @@ export default {
                             total: item.views
                         }
                     })
+                    let dd = new DimensionalData(data.items, 'timestamp');
                     self.metricData.detail = formattedData;
                 })
             })
@@ -252,34 +213,6 @@ export default {
 }
 .panel {
     padding: 25px 18px 18px 18px;
-}
-.left.panel {
-    background-color: #D8D8D8;
-    min-width: 242px;
-}
-.left.panel h3.header {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 0 6px 0;
-}
-.left.panel p {
-    margin-top: 8px;
-}
-.left.panel .ui.clearing.divider {
-    margin-bottom: 2px;
-}
-.left.panel .wikis {
-    min-height: 120px;
-}
-.left.panel .ui.icon.input {
-    width: 204px;
-}
-.left.panel .ui.icon.input > input {
-    height: 36px;
-    font-size: 13px!important;
-    border: 1px solid #aaa9a9!important;
-    border-radius: 4px;
-    padding-right: 32px!important;
 }
 
 .clearing.basic.segment { padding: 0; }

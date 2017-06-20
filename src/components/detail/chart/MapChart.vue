@@ -7,6 +7,6 @@
 <script>
 export default {
     name: 'map-chart',
-    props: ['data']
+    props: ['metricData']
 }
 </script>

@@ -1,40 +1,61 @@
 <template>
-<div class="ui clearing basic segment">
-    <h2 class="ui left floated header">
-        {{metricData.fullName || 'No data yet... '}}
-        <span class="subdued">{{wiki.title}}</span>
-    </h2>
+<section class="graph panel">
+    <div class="ui clearing basic segment">
+        <h2 class="ui left floated header">
+            {{metricData.fullName || 'No data yet... '}}
+            <span class="subdued">{{wiki.title}}</span>
+        </h2>
 
-    <div class="ui right floated basic fudge segment">
-        <simple-legend v-if="chartType === 'bar'" class="simple legend" :data="metricData"></simple-legend>
-        <div class="ui right floated icon buttons">
+        <div class="ui right floated basic fudge segment">
+            <simple-legend v-if="chartType === 'bar'" class="simple legend" :data="metricData"></simple-legend>
+            <div class="ui right floated icon buttons">
 
-            <button class="ui icon button" title="Download">
-                <i class="download icon"></i>
-            </button>
-            <div class="ui simple dropdown right labeled icon button"
-                 title="Change Chart">
-                <i class="ui dropdown icon"/>
-                <span>
-                    <i :class="chartIcon" class="chart icon"></i>
-                </span>
-                <div class="menu">
-                    <div class="item"
-                         v-for="t in chartTypes" :key="t.chart"
-                         @click="changeChart(t)">
-                         <i :class="t.icon" class="chart icon"></i>
-                         {{t.chart}}
-                     </div>
+                <button class="ui icon button" title="Download">
+                    <i class="download icon"></i>
+                </button>
+                <div class="ui simple dropdown right labeled icon button"
+                     title="Change Chart">
+                    <i class="ui dropdown icon"/>
+                    <span>
+                        <i :class="chartIcon" class="chart icon"></i>
+                    </span>
+                    <div class="menu">
+                        <div class="item"
+                             v-for="t in chartTypes" :key="t.chart"
+                             @click="changeChart(t)">
+                             <i :class="t.icon" class="chart icon"></i>
+                             {{t.chart}}
+                         </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <component
+            :is="chartComponent"
+            :metricData="metricData"
+            :breakdown="breakdown">
+        </component>
+        <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
+            <time-range-selector v-on:changeTimeRange='changeTimeRange'></time-range-selector>
+            <h5>
+                Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
+            </h5>
+        </div>
+        <div class="ui center aligned subdued basic segment">
+            <p>* Definition of {{metric}} goes here, pulled from config or maybe dynamically from the wiki page.</p>
+            <p>More descriptor text will go here assuming that it takes a few sentences to explain a term for a metric.</p>
+
+        </div>
+        <div class="ui right floated icon button" @click="toggleFullscreen">
+            <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
+        </div>
     </div>
-    <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
-</div>
+</section>
 </template>
 
 <script>
-
+import ArrowIcon from '../ArrowIcon'
+import TimeRangeSelector from '../TimeRangeSelector'
 import SimpleLegend from './SimpleLegend'
 import BarChart from './chart/BarChart'
 import LineChart from './chart/LineChart'
@@ -45,6 +66,8 @@ import EmptyChart from './chart/EmptyChart'
 export default {
     name: 'graph-panel',
     components: {
+        ArrowIcon,
+        TimeRangeSelector,
         SimpleLegend,
         BarChart,
         LineChart,
@@ -52,33 +75,35 @@ export default {
         TableChart,
         EmptyChart
     },
-    props: ['metricData', 'wiki', 'breakdowns'],
+    props: ['metricData', 'wiki', 'breakdowns', 'fullscreen'],
     computed: {
-        chartComponent: function () {
-            const availableChartTypes = [
-                { chart: 'bar', icon: 'bar' },
-                { chart: 'line', icon: 'line' },
-                { chart: 'map', icon: 'globe' },
-                { chart: 'table', icon: 'table' },
-            ]
-            this.chartTypes = availableChartTypes.filter((c) => {
-                if (!this.metricData) { return false; }
-                if (this.metricData.type === 'bars') { return c.chart !== 'line' }
-                if (this.metricData.type === 'lines') { return c.chart === 'line' }
-                return c.chart === 'table'
-            });
-            this.chartIcon = this.chartTypes[0].icon
-            return (this.chartTypes[0].chart || 'empty') + '-chart'
-        },
         breakdown: function () {
             return (this.breakdowns || []).find((m) => m.on)
+        },
+        chartTypes: function () {
+            return this.getChartTypes();
+        },
+        chartIcon: function () {
+            return this.getChartTypes()[0].icon;
+        },
+        chartComponent: function () {
+            if (this.chartType) return this.chartType + '-chart'
+            let chartTypes = this.getChartTypes();
+            return (chartTypes[0].chart || 'empty') + '-chart'
+        },
+        total: function () {
+            if (!this.metricData.detail) { return 0 }
+
+            return this.metricData.detail.reduce((r, m) => r + m.total, 0)
+        },
+        metric: function () {
+            return this.$route.params.metric ?
+                this.$route.params.metric : this.defaultMetrics[this.area]
         }
     },
     data () {
         return {
-            chartTypes: [],
             chartType: null,
-            chartIcon: 'empty',
             availableChartTypes: [
                 { chart: 'bar', icon: 'bar' },
                 { chart: 'line', icon: 'line' },
@@ -90,7 +115,20 @@ export default {
     methods: {
         changeChart (t) {
             this.chartType = t.chart
-            this.chartIcon = t.icon
+        },
+        changeTimeRange (range) {
+            this.$emit('changeTimeRange', range);
+        },
+        getChartTypes () {
+            return this.availableChartTypes.filter((c) => {
+                if (!this.metricData) { return false; }
+                if (this.metricData.type === 'bars') { return c.chart !== 'line' }
+                if (this.metricData.type === 'lines') { return c.chart === 'line' }
+                return c.chart === 'table'
+            });
+        },
+        toggleFullscreen () {
+            this.$emit('toggleFullscreen')
         }
     }
 }

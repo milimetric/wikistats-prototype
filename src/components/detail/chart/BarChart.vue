@@ -15,14 +15,14 @@ import config from '../../../apis/Configuration'
 
 export default {
     name: 'bar-chart',
-    props: ['data', 'breakdown'],
+    props: ['metricData', 'breakdown'],
 
     mounted () {
         this.drawChart()
     },
 
     watch: {
-        data: {
+        metricData: {
             handler: function () {
                 this.drawChart()
             },
@@ -51,8 +51,8 @@ export default {
                     'transform', `translate(${margin.left},${margin.top})`
                   )
 
-            const data = self.data.detail ?
-                self.data : { detail: [] }
+            const data = self.metricData.detail ?
+                self.metricData : { detail: [] }
 
             function resize () {
                 const n = root.node(),
@@ -77,7 +77,7 @@ export default {
                     g.append('g').selectAll('.bar').data(data.detail)
                         .enter().selectAll('.minibar').data(function (d) {
                             // this should be passed in
-                            const breakdown = self.data.breakdowns[0]
+                            const breakdown = self.metricData.breakdowns[0]
                             const breakdowns = breakdown.values.filter((x) => x.on)
 
                             // in the real version make sure colors stick with particular breakdown values
@@ -85,7 +85,7 @@ export default {
                                 month: d.month,
                                 key: b.name,
                                 value: d.breakdowns[breakdown.name][b.name],
-                                color: config.colors[self.data.area][[config.stableColorIndexes[b.name]]],
+                                color: config.colors[self.metricData.area][[config.stableColorIndexes[b.name]]],
                                 width: xW.bandwidth() / breakdowns.length,
                                 index: i
                             }))
@@ -105,7 +105,7 @@ export default {
                             .attr('y', (d) => y(d.total))
                             .attr('width', xW.bandwidth())
                             .attr('height', (d) => height - y(d.total))
-                            .attr('fill', (d) => self.data.darkColor)
+                            .attr('fill', (d) => self.metricData.darkColor)
                 }
 
                 const xAxis = axes.axisBottom(x).ticks(time.timeMonth.every(3)),
