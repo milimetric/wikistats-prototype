@@ -5,14 +5,17 @@ const testConfiguration = {
 
     frameworks: ['jasmine-ajax', 'jasmine'],
 
-    files: [
-        './test/index.js'
-    ],
+    files: [{
+        pattern: './test/**/*.spec.js',
+        watched: false,
+        included: true,
+        served: true
+    }],
 
     webpack: webpackConfig,
 
     preprocessors: {
-        'test/index.js': ['webpack']
+        './test/**/*.spec.js': ['webpack']
     }
 }
 
