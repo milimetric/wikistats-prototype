@@ -14,6 +14,7 @@
         :metricData='metricData'
         :wiki='wiki'
         :breakdowns='breakdowns'
+        :area='area'
         @changeTimeRange='setTimeRange'
         @toggleFullscreen='toggleFullscreen'
     />
