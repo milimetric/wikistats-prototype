@@ -33,6 +33,7 @@
         <component
             :is="chartComponent"
             :metricData="metricData"
+            :graphModel="graphModel"
             :breakdown="breakdown">
         </component>
         <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
@@ -75,7 +76,7 @@ export default {
         TableChart,
         EmptyChart
     },
-    props: ['metricData', 'wiki', 'breakdowns', 'fullscreen'],
+    props: ['metricData', 'wiki', 'breakdowns', 'fullscreen', 'graphModel'],
     computed: {
         breakdown: function () {
             return (this.breakdowns || []).find((m) => m.on)

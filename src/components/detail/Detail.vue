@@ -15,6 +15,7 @@
         :wiki='wiki'
         :breakdowns='breakdowns'
         :area='area'
+        :graphModel='graphModel'
         @changeTimeRange='setTimeRange'
         @toggleFullscreen='toggleFullscreen'
     />
@@ -38,7 +39,8 @@ import DetailSidebar from './DetailSidebar'
 import config from '../../apis/Configuration'
 import router from '../../router/index'
 import DimensionalData from '../../models/DimensionalData'
-import AQS from '../../apis/aqs'
+import GraphModel from '../../models/GraphModel'
+// import AQS from '../../apis/aqs'
 
 import '../../../semantic/src/definitions/modules/modal'
 import '../../../semantic/src/definitions/modules/dimmer'
@@ -69,6 +71,8 @@ export default {
             metricData: {},
 
             breakdowns: [],
+
+            graphModel: null
         }
     },
 
@@ -114,34 +118,32 @@ export default {
             this.loadData();
         },
         loadData () {
-            let aqsApi = new AQS();
-            aqsApi.getData({
-                project: [self.wiki.urlName],
-                access_method: ['desktop', 'mobile-web']
-            }, {
-                metric: 'pageviews-aggregate',
-                agent_type: 'user',
-                granularity: 'daily',
-                start: '20170514',
-                end: '20170614'
-            }).done(dimensionalData => {
-                debugger
-            });
-
-            const self = this
+            // let aqsApi = new AQS();
+            // aqsApi.getData({
+            //     project: [self.wiki.urlName],
+            //     access_method: ['desktop', 'mobile-web']
+            // }, {
+            //     metric: 'pageviews-aggregate',
+            //     agent_type: 'user',
+            //     granularity: 'daily',
+            //     start: '20170514',
+            //     end: '20170614'
+            // }).done(dimensionalData => {
+            //     debugger
+            // });
 
             this.highlightMetric = { name: this.metric, area: this.area }
 
-            config.metricData(this.metric, this.area).then(function (result) {
-                self.metricData = result
-                self.breakdowns = result.breakdowns
+            config.metricData(this.metric, this.area).then((result) => {
+                this.metricData = result
+                this.breakdowns = result.breakdowns
                 let url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/' +
                             'aggregate/{{wiki}}/all-access/all-agents/' +
                             'monthly/{{start}}/{{end}}';
-                url = url.replace('{{start}}', self.metricData.range[0])
-                         .replace('{{end}}', self.metricData.range[1])
-                         .replace('{{wiki}}', self.wiki.urlName)
-                $.get(url, function (data) {
+                url = url.replace('{{start}}', this.metricData.range[0])
+                         .replace('{{end}}', this.metricData.range[1])
+                         .replace('{{wiki}}', this.wiki.urlName)
+                $.get(url, (data) => {
                     const formattedData = data.items.map((item) => {
                         return {
                             month: item.timestamp.slice(0,4) + '-'
@@ -151,15 +153,16 @@ export default {
                         }
                     })
                     let dd = new DimensionalData(data.items, 'timestamp');
-                    self.metricData.detail = formattedData;
+                    this.graphModel = new GraphModel(this.metricData, dd);
+                    this.metricData.detail = formattedData;
                 })
             })
 
-            config.metrics(this.area).then(function (result) {
+            config.metrics(this.area).then((result) => {
                 const relevantMetrics = Object.keys(result)
-                    .filter((m) => result[m].area === self.area)
+                    .filter((m) => result[m].area === this.area)
 
-                self.otherMetrics =
+                this.otherMetrics =
                     relevantMetrics.map((m) => Object.assign(result[m], { name: m }))
             })
         },
