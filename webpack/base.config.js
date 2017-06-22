@@ -1,16 +1,11 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var path = require('path');
-var utils = require('./build/utils');
-var webpack = require('webpack');
-function resolve (dir) {
-    return path.join(__dirname, '..', dir)
-}
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const utils = require('./utils');
+const webpack = require('webpack');
+
+
 module.exports = {
     entry: './src/main.js',
-    output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist')
-    },
     resolve: {
         extensions: ['.js', '.vue', '.json'],
         // vue-loader isn't compiling templates with the
@@ -24,11 +19,6 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-            },
-            {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                include: [resolve('src'), resolve('test')]
             },
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -55,7 +45,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'index.html',
+            template: 'src/index.html',
             inject: true
         }),
         new webpack.ProvidePlugin({
@@ -72,7 +62,7 @@ module.exports = {
         ),
     ],
     devServer: {
-        contentBase: path.join(__dirname, "dist"),
+        contentBase: utils.resolve('dist'),
         compress: true,
         port: 8080
     },
