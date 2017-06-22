@@ -430,5 +430,6 @@ export default {
     colors,
     stableColorIndexes,
     questions,
-    areasWithMetrics
+    areasWithMetrics,
+
 }

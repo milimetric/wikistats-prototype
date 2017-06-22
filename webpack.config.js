@@ -63,11 +63,23 @@ module.exports = {
             jQuery : "jquery",
             "window.jQuery" : "jquery",
             "root.jQuery" : "jquery"
-        })
+        }),
+        // this hides some warnings that ajv > 5.0 resolves
+        // but webpack isn't yet upgraded to ajv 5+, fix per
+        // https://github.com/epoberezkin/ajv/issues/117#issuecomment-198328830
+        new webpack.IgnorePlugin(
+            /ajv/
+        ),
     ],
     devServer: {
         contentBase: path.join(__dirname, "dist"),
         compress: true,
         port: 8080
+    },
+    node: {
+        console: true,
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     }
 }
