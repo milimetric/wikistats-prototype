@@ -26,7 +26,7 @@
         <h3 class="header">Filters and Breakdowns</h3>
 
         <div v-for="b in breakdowns">
-            Show:
+            {{b.name}}
             <label class="xui checkbox" v-for="bv in b.values">
                 <input type="checkbox" v-model="bv.on"/>
                 {{bv.name}}

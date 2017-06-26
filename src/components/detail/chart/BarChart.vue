@@ -71,21 +71,20 @@ export default {
                 svg.attr('width', n.offsetWidth).attr('height', n.offsetHeight)
                 g.attr('width', width).attr('height', height)
 
-                if (self.breakdown) {
-                    // this should be dynamic but we only have four colors
-                    // the data structure is bad, redo that in real code
+                if (typeof detail[0].total !=  'number') {
+                    // TODO max should only take into account the active breakdowns, not all
+                    const max = _.max(detail.map((r) => _.max(_.map(r.total, (d) => d))))
+                    y.domain([0, max])
                     g.append('g').selectAll('.bar').data(detail)
                         .enter().selectAll('.minibar').data(function (d) {
                             // this should be passed in
                             const breakdown = self.graphModel.getBreakdowns()[0]
                             const breakdowns = breakdown.values.filter((x) => x.on)
-
-                            // in the real version make sure colors stick with particular breakdown values
                             const newData = breakdowns.map((b, i) => ({
                                 month: d.month,
                                 key: b.name,
-                                value: d.breakdowns[breakdown.name][b.name],
-                                color: config.colors[self.graphModel.getArea()][[config.stableColorIndexes[b.name]]],
+                                value: d.total[b.key],
+                                color: config.colors[self.graphModel.getArea()][[config.stableColorIndexes[b.key]]],
                                 width: xW.bandwidth() / breakdowns.length,
                                 index: i
                             }))

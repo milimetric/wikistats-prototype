@@ -93,9 +93,10 @@ export default {
             return (chartTypes[0].chart || 'empty') + '-chart'
         },
         total: function () {
-            if (!this.metricData.detail) { return 0 }
+            const data = this.graphModel && this.graphModel.getGraphData();
+            if (!data) { return 0 }
 
-            return this.metricData.detail.reduce((r, m) => r + m.total, 0)
+            return data.reduce((r, m) => r + m.total, 0)
         },
         metric: function () {
             return this.$route.params.metric ?

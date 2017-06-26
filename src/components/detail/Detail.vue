@@ -40,7 +40,7 @@ import config from '../../apis/Configuration'
 import router from '../../router/index'
 import DimensionalData from '../../models/DimensionalData'
 import GraphModel from '../../models/GraphModel'
-// import AQS from '../../apis/aqs'
+import AQS from '../../apis/aqs'
 
 import '../../../semantic/src/definitions/modules/modal'
 import '../../../semantic/src/definitions/modules/dimmer'
@@ -118,45 +118,25 @@ export default {
             this.loadData();
         },
         loadData () {
-            // let aqsApi = new AQS();
-            // aqsApi.getData({
-            //     project: [self.wiki.urlName],
-            //     access_method: ['desktop', 'mobile-web']
-            // }, {
-            //     metric: 'pageviews-aggregate',
-            //     agent_type: 'user',
-            //     granularity: 'daily',
-            //     start: '20170514',
-            //     end: '20170614'
-            // }).done(dimensionalData => {
-            //     debugger
-            // });
-
             this.highlightMetric = { name: this.metric, area: this.area }
 
             config.metricData(this.metric, this.area).then((result) => {
                 this.metricData = result
                 this.breakdowns = result.breakdowns
-                let url = 'https://wikimedia.org/api/rest_v1/metrics/pageviews/' +
-                            'aggregate/{{wiki}}/all-access/all-agents/' +
-                            'monthly/{{start}}/{{end}}';
-                url = url.replace('{{start}}', this.metricData.range[0])
-                         .replace('{{end}}', this.metricData.range[1])
-                         .replace('{{wiki}}', this.wiki.urlName)
-                $.get(url, (data) => {
-                    const formattedData = data.items.map((item) => {
-                        return {
-                            month: item.timestamp.slice(0,4) + '-'
-                                + item.timestamp.slice(4,6) + '-'
-                                + item.timestamp.slice(6,8),
-                            total: item.views
-                        }
-                    })
-                    let dd = new DimensionalData(data.items, 'timestamp');
-                    this.graphModel = new GraphModel(this.metricData, dd);
-                    this.metricData.detail = formattedData;
-                })
-            })
+                let aqsApi = new AQS();
+                aqsApi.getData({
+                    project: [this.wiki.urlName],
+                    access: ['desktop', 'mobile-web', 'mobile-app']
+                }, {
+                    metric: result.metricName,
+                    agent_type: result.agent_type,
+                    granularity: result.granularity,
+                    start: result.range[0],
+                    end: result.range[1]
+                }).then(dimensionalData => {
+                    this.graphModel = new GraphModel(result, dimensionalData);
+                });
+            });
 
             config.metrics(this.area).then((result) => {
                 const relevantMetrics = Object.keys(result)
