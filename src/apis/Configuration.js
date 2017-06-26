@@ -8,7 +8,10 @@ const colors = {
 const stableColorIndexes = {
     'Lightly Active': 0,
     'Active': 1,
-    'Very Active': 2
+    'Very Active': 2,
+    'desktop': 0,
+    'mobile-app': 1,
+    'mobile-web': 2
 }
 
 const lightColor = {
@@ -305,17 +308,25 @@ const metrics = {
     },
     'total-pageviews': {
         fullName: 'Total Page Views',
+        metricName: 'pageviews-aggregate',
         type: 'bars',
         area: 'reading',
         series: fakeSeries,
         changeMoM: 3,
         changeYoY: -0.5,
-        lastMonth: 'November',
-        lastMonthValue: 7741345234,
-        lastYear: 2016,
-        lastYearValue: 25341345234,
-        detail: detailSeries,
-        range: ['2015053100', '2017053100']
+        granularity: 'monthly',
+        agent_type: 'all-agents',
+        range: ['2015053100', '2017053100'],
+        breakdowns: [{
+            on: false,
+            name: 'Access method',
+            breakdownName: 'access',
+            values: [
+                { name: 'Desktop', on: false, key: 'desktop' },
+                { name: 'Mobile App', on: false, key: 'mobile-app' },
+                { name: 'Mobile Web', on: false, key: 'mobile-web' }
+            ]
+        }],
     },
     'unique-devices': {
         fullName: 'Unique Devices',
