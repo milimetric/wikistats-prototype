@@ -15,14 +15,14 @@ import config from '../../../apis/Configuration'
 
 export default {
     name: 'bar-chart',
-    props: ['data', 'breakdown'],
+    props: ['breakdown', 'graphModel'],
 
     mounted () {
         this.drawChart()
     },
 
     watch: {
-        data: {
+        graphModel: {
             handler: function () {
                 this.drawChart()
             },
@@ -39,6 +39,9 @@ export default {
         drawChart () {
             const self = this
 
+            const detail = this.graphModel && this.graphModel.getGraphData();
+            if (!detail) return;
+
             const root = d3.select(this.$el),
                   margin = {top: 6, right: 0, bottom: 20, left: 40},
                   padding = 4
@@ -51,9 +54,6 @@ export default {
                     'transform', `translate(${margin.left},${margin.top})`
                   )
 
-            const data = self.data.detail ?
-                self.data : { detail: [] }
-
             function resize () {
                 const n = root.node(),
                       width = n.offsetWidth - margin.left - margin.right,
@@ -61,31 +61,30 @@ export default {
                       x = scales.scaleTime().rangeRound([0, width]),
                       y = scales.scaleLinear().rangeRound([height, 0]),
                       xW = scales.scaleBand().align(0).padding(0.92),
-                      dates = data.detail.map((d) => new Date(Date.parse(d.month)))
+                      dates = detail.map((d) => new Date(Date.parse(d.month)))
 
                 x.domain(arr.extent(dates))
-                y.domain([0, arr.max(data.detail.map((d) => d.total))])
+                y.domain([0, arr.max(detail.map((d) => d.total))])
 
                 xW.range(x.range()).domain(x.domain())
 
                 svg.attr('width', n.offsetWidth).attr('height', n.offsetHeight)
                 g.attr('width', width).attr('height', height)
 
-                if (self.breakdown) {
-                    // this should be dynamic but we only have four colors
-                    // the data structure is bad, redo that in real code
-                    g.append('g').selectAll('.bar').data(data.detail)
+                if (typeof detail[0].total !=  'number') {
+                    // TODO max should only take into account the active breakdowns, not all
+                    const max = _.max(detail.map((r) => _.max(_.map(r.total, (d) => d))))
+                    y.domain([0, max])
+                    g.append('g').selectAll('.bar').data(detail)
                         .enter().selectAll('.minibar').data(function (d) {
                             // this should be passed in
-                            const breakdown = self.data.breakdowns[0]
+                            const breakdown = self.graphModel.getBreakdowns()[0]
                             const breakdowns = breakdown.values.filter((x) => x.on)
-
-                            // in the real version make sure colors stick with particular breakdown values
                             const newData = breakdowns.map((b, i) => ({
                                 month: d.month,
                                 key: b.name,
-                                value: d.breakdowns[breakdown.name][b.name],
-                                color: config.colors[self.data.area][[config.stableColorIndexes[b.name]]],
+                                value: d.total[b.key],
+                                color: config.colors[self.graphModel.getArea()][[config.stableColorIndexes[b.key]]],
                                 width: xW.bandwidth() / breakdowns.length,
                                 index: i
                             }))
@@ -99,13 +98,13 @@ export default {
                             .attr('fill', (d) => d.color)
 
                 } else {
-                    g.append('g').selectAll('.bar').data(data.detail)
+                    g.append('g').selectAll('.bar').data(detail)
                         .enter().append('rect')
                             .attr('x', (d) => x(Date.parse(d.month)))
                             .attr('y', (d) => y(d.total))
                             .attr('width', xW.bandwidth())
                             .attr('height', (d) => height - y(d.total))
-                            .attr('fill', (d) => self.data.darkColor)
+                            .attr('fill', (d) => self.graphModel.getDarkColor())
                 }
 
                 const xAxis = axes.axisBottom(x).ticks(time.timeMonth.every(3)),

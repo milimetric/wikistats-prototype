@@ -62,48 +62,44 @@ class DimensionalData {
     }
 
     breakdown (column, secondColumn) {
-        this.addDimension(column);
-        let m = this.currentMeasure;
-
-        var ret = this.dimensionCache[column].group().reduce(
-            (b, x) => {
-                if (secondColumn) {
-                    b[x[secondColumn]] = b[x[secondColumn]] ?
-                        b[x[secondColumn]] + x[m] :
-                        x[m];
-                } else {
-                    b += x[m];
+        let measure = this.currentMeasure;
+        this.addDimension(measure);
+        if (!secondColumn) {
+            const breakDownMap = this.dimensionCache[measure].group().reduceSum((row) => {
+                return row[column];
+            }).top(Infinity).reduce((p, c) => {
+                p[c.key] = c.value;
+                return p;
+            }, {});
+            return Object.keys(breakDownMap).map((key) => {
+                let row = {}
+                row[measure] = key;
+                row[column] = breakDownMap[key];
+                return row;
+            });
+        } else {
+            const breakDownMap = this.dimensionCache[measure].group().reduce(
+                (p,c) => {
+                    p[c[secondColumn]] = p[c[secondColumn]]?
+                        p[c[secondColumn]] + c[column]:
+                        c[column];
+                    return p;
+                },
+                () => {},
+                () => {
+                    return {};
                 }
-                return b;
-            },
-            (b, x) => {
-                if (secondColumn) {
-                    b[x[secondColumn]] = b[x[secondColumn]] - x[m];
-                } else {
-                    b -= x[m];
-                }
-                return b;
-            },
-            () => secondColumn ? {} : 0
-
-        ).all().reduce((results, g) => {
-            if (secondColumn) {
-                return results.concat(Object.keys(g.value).map((k) => {
-                    let r = {};
-                    r[column] = g.key;
-                    r[secondColumn] = k;
-                    r[m] = g.value[k];
-                    return r;
-                }));
-            } else {
-                let exploded = {};
-                exploded[column] = g.key;
-                exploded[m] = g.value;
-                results.push(exploded);
-                return results;
-            }
-        }, []);
-        return ret;
+            ).top(Infinity).reduce((p, c) => {
+                p[c.key] = c.value;
+                return p;
+            }, {});
+            return Object.keys(breakDownMap).map((key) => {
+                let row = {}
+                row[measure] = key;
+                row[column] = breakDownMap[key];
+                return row;
+            });
+        }
     }
 
 }

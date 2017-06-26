@@ -29,7 +29,10 @@ export default {
     data () {
         return {
             warning: true,
-            wiki: 'Wikipedia (All languages)'
+            wiki: {
+                title: 'Wikipedia (All languages)',
+                urlName: 'all-projects'
+            }
         }
     },
     mounted () {

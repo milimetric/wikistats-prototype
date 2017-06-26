@@ -1,28 +1,28 @@
 <template>
 <div>
-    <table :class="data.area" class="ui table" v-if="!breakdown">
+    <table :class="metricData.area" class="ui table" v-if="!breakdown">
         <thead>
-            <tr v-if="data.type === 'bars'">
+            <tr v-if="metricData.type === 'bars'">
                 <th>Month</th>
                 <th>Total</th>
             </tr>
-            <tr v-if="data.type === 'list'">
+            <tr v-if="metricData.type === 'list'">
                 <th>Name</th>
-                <th>{{data.valueName}}</th>
+                <th>{{metricData.valueName}}</th>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m in data.detail" v-if="data.type === 'bars'">
+            <tr v-for="m in metricData.detail" v-if="metricData.type === 'bars'">
                 <td>{{m.month}}</td>
                 <td>{{m.total}}</td>
             </tr>
-            <tr v-for="m in data.sortedList" v-if="data.type === 'list'">
+            <tr v-for="m in metricData.sortedList" v-if="metricData.type === 'list'">
                 <td>{{m.name}}</td>
                 <td>{{m.value}}</td>
             </tr>
         </tbody>
     </table>
-    <table :class="data.area" class="ui table" v-if="breakdown">
+    <table :class="metricData.area" class="ui table" v-if="breakdown">
         <thead>
             <tr>
                 <th>Month</th>
@@ -30,7 +30,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m in data.detail">
+            <tr v-for="m in metricData.detail">
                 <td>{{m.month}}</td>
                 <td v-for="v in breakdown.values" v-if="v.on">{{m.breakdowns[breakdown.name][v.name]}}</td>
             </tr>
@@ -42,7 +42,7 @@
 <script>
 export default {
     name: 'map-chart',
-    props: ['data', 'breakdown'],
+    props: ['metricData', 'breakdown'],
 
     mounted () {
         this.setColors()
@@ -58,7 +58,7 @@ export default {
             let i = null
 
             for (let i = 0; i < headerCells.length; i++) {
-                headerCells[i].style = `background-color: ${this.data.darkColor};`
+                headerCells[i].style = `background-color: ${this.metricData.darkColor};`
             }
         }
     }

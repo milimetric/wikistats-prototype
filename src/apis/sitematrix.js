@@ -45,5 +45,35 @@ export default {
             if (!found) { throw 'Could not find url for project!'; }
             return found;
         });
+    },
+
+    getWikiList () {
+        var urlPromise = new $.Deferred();
+        matrix.then(function (cache) {
+            var allWikis = [];
+            Object.keys(cache).forEach(function (key) {
+                var group = cache[key];
+                if (key === 'count'){}
+                else if (key === 'specials') {
+                    allWikis = allWikis.concat(group.map(function (s) {
+                        return {
+                            title: s.sitename,
+                            urlName: s.url.replace(/https:\/\/(www\.)?/, ''),
+                            dbname: s.dbname
+                        }
+                    }));
+                } else {
+                    allWikis = allWikis.concat(group.site.map(function (s) {
+                        return {
+                            title: group.localname + " " + s.sitename,
+                            urlName: s.url.replace(/https:\/\/(www\.)?/, ''),
+                            dbname: s.dbname
+                        }
+                    }));
+                }
+            });
+            urlPromise.resolve(allWikis);
+        });
+        return urlPromise.promise();
     }
 };

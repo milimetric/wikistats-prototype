@@ -16,14 +16,14 @@ import config from '../../../apis/Configuration'
 
 export default {
     name: 'line-chart',
-    props: ['data', 'breakdown'],
+    props: ['metricData', 'breakdown'],
 
     mounted () {
         this.drawChart()
     },
 
     watch: {
-        data: {
+        metricData: {
             handler: function () {
                 this.drawChart()
             },
@@ -52,8 +52,8 @@ export default {
                     'transform', `translate(${margin.left},${margin.top})`
                   )
 
-            const data = self.data.detail ?
-                self.data : { detail: [] }
+            const data = self.metricData.detail ?
+                self.metricData : { detail: [] }
 
             function resize () {
                 const n = root.node(),
@@ -79,7 +79,7 @@ export default {
                 } else {
                     g.append('path').datum(data.detail)
                         .attr('d', line)
-                        .style('stroke', self.data.darkColor)
+                        .style('stroke', self.metricData.darkColor)
                         .style('stroke-width', '2px')
                         .style('fill', 'none')
                 }

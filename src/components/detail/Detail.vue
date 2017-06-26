@@ -1,147 +1,46 @@
 <template>
 <section class="detail container" :class="{ area, fullscreen }">
-    <section class="left panel" v-if="!fullscreen">
-        <div class="wikis">
-            <h3 class="header">Wiki</h3>
-            <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
-            <p>
-                <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
-                <div class="add wiki design">
-                    "Add another Wiki" is not implemented in the prototype.  But you can see how it would work in <a target="_new" href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Detail+Page+Two+Wiki+comparison.png">the design here</a> and <a href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Wiki+Selector.png" target="_new">here</a>.
-                </div>
-            </p>
-        </div>
+    <detail-sidebar
+        v-if="!fullscreen"
+        :wiki='wiki'
+        :otherMetrics='otherMetrics'
+        :metric='metric'
+        :breakdowns='breakdowns'
+        :area='area'
+        @wikiSelected='wikiSelected'
+    />
 
-        <div class="ui clearing divider"></div>
+    <graph-panel
+        :metricData='metricData'
+        :wiki='wiki'
+        :breakdowns='breakdowns'
+        :area='area'
+        :graphModel='graphModel'
+        @changeTimeRange='setTimeRange'
+        @toggleFullscreen='toggleFullscreen'
+    />
 
-        <h3 class="header">Metrics</h3>
+    <metrics-modal
+        :areasWithMetrics="areasWithMetrics"
+        :highlightMetric="highlightMetric"
+        @changeMetric="goHighlight">
 
-        <router-link v-for="o in otherMetrics" :key="o.name"
-                     :to="'/' + area + '/' + o.name"
-                     class="ui line label"
-                     :class="{active: o.name === metric}">
-            {{o.fullName}}
-        </router-link>
-
-        <p>
-            <a @click.prevent="viewMoreMetrics" href="#">View more metrics</a>
-        </p>
-
-        <div v-if="breakdowns">
-        <div class="ui clearing divider"></div>
-
-            <h3 class="header">Filters and Breakdowns</h3>
-
-            <div v-for="b in breakdowns">
-                Show:
-                <label class="xui checkbox" v-for="bv in b.values">
-                    <input type="checkbox" v-model="bv.on"/>
-                    {{bv.name}}
-                </label>
-
-                <div class="ui toggle checkbox">
-                    <input type="checkbox" id="breakdown" v-model="b.on">
-                    <label for="breakdown">
-                        Breakdown
-                        <span v-if="!b.on">Off</span>
-                        <span v-if="b.on">On</span>
-                        <i class="help circle icon" title="Breakdowns help you see more detail by breaking down the total values into parts."/>
-                    </label>
-                </div>
-            </div>
-        </div>
-    </section>
-    <section class="graph panel">
-        <div class="ui clearing basic segment">
-            <h2 class="ui left floated header">
-                {{metricData.fullName || 'No data yet... '}}
-                <span class="subdued">{{wiki.replace(' (All languages)', '')}}</span>
-            </h2>
-
-            <div class="ui right floated basic fudge segment">
-                <simple-legend v-if="chartType === 'bar'" class="simple legend" :data="metricData"></simple-legend>
-                <div class="ui right floated icon buttons">
-
-                    <button class="ui icon button" title="Download">
-                        <i class="download icon"></i>
-                    </button>
-                    <div class="ui simple dropdown right labeled icon button"
-                         title="Change Chart">
-                        <i class="ui dropdown icon"/>
-                        <span>
-                            <i :class="chartIcon" class="chart icon"></i>
-                        </span>
-                        <div class="menu">
-                            <div class="item"
-                                 v-for="t in chartTypes" :key="t.chart"
-                                 @click="changeChart(t)">
-                                 <i :class="t.icon" class="chart icon"></i>
-                                 {{t.chart}}
-                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <component :is="chartComponent" :data="metricData" :breakdown="breakdown"></component>
-
-        <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
-            <time-range-selector></time-range-selector>
-            <h5>
-                Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
-            </h5>
-        </div>
-
-        <div class="ui center aligned subdued basic segment">
-            <p>* Definition of {{metric}} goes here, pulled from config or maybe dynamically from the wiki page.</p>
-            <p>More descriptor text will go here assuming that it takes a few sentences to explain a term for a metric.</p>
-
-        </div>
-
-        <div class="ui right floated icon button" @click="toggleFullscreen">
-            <i class="ui icon" :class="{expand: !fullscreen, compress: fullscreen}"/>
-        </div>
-    </section>
-
-    <div class="ui metrics modal">
-        <i class="close icon"></i>
-        <div class="header">
-            All Metrics
-            <div class="subdued">Select a metric to visualize and explore its data</div>
-        </div>
-        <div class="ui three column grid">
-            <div class="column" v-for="a in areasWithMetrics">
-                <h4 :class="a.name" :style="{ borderBottom: '2px solid ' + a.color }">{{a.name}}</h4>
-                <div v-for="m in a.metrics" :key="m.name"
-                             class="ui line label"
-                             :class="{active: m.name === highlightMetric.name}"
-                             @click="changeHighlight(m.name, a.name)">
-                    {{m.fullName}}
-                </div>
-            </div>
-        </div>
-        <div class="actions">
-            <div class="ui blue button" @click="goHighlight">Go</div>
-        </div>
-    </div>
+    </metrics-modal>
 </section>
 </template>
 
 <script>
-import WikiSelector from '../WikiSelector'
 import SimpleLegend from './SimpleLegend'
-import ArrowIcon from '../ArrowIcon'
-import TimeRangeSelector from '../TimeRangeSelector'
+import MetricsModal from './MetricsModal'
 
-import BarChart from './chart/BarChart'
-import LineChart from './chart/LineChart'
-import MapChart from './chart/MapChart'
-import TableChart from './chart/TableChart'
-import EmptyChart from './chart/EmptyChart'
+import GraphPanel from './GraphPanel'
+import DetailSidebar from './DetailSidebar'
 
 import config from '../../apis/Configuration'
 import router from '../../router/index'
+import DimensionalData from '../../models/DimensionalData'
+import GraphModel from '../../models/GraphModel'
+import AQS from '../../apis/aqs'
 
 import '../../../semantic/src/definitions/modules/modal'
 import '../../../semantic/src/definitions/modules/dimmer'
@@ -150,33 +49,16 @@ export default {
     name: 'detail',
     props: ['wiki'],
     components: {
-        WikiSelector,
         SimpleLegend,
-        ArrowIcon,
-        TimeRangeSelector,
-
-        BarChart,
-        LineChart,
-        MapChart,
-        TableChart,
-        EmptyChart,
+        MetricsModal,
+        GraphPanel,
+        DetailSidebar
     },
     data () {
         return {
             fullscreen: false,
             areasWithMetrics: config.areasWithMetrics,
             highlightMetric: {},
-
-            // doing some exaggerated computables to test deeper chaining
-            chartTypes: [],
-            chartType: null,
-            chartIcon: 'empty',
-            availableChartTypes: [
-                { chart: 'bar', icon: 'bar' },
-                { chart: 'line', icon: 'line' },
-                { chart: 'map', icon: 'globe' },
-                { chart: 'table', icon: 'table' },
-            ],
 
             defaultMetrics: {
                 contributing: 'active-editors',
@@ -189,13 +71,12 @@ export default {
             metricData: {},
 
             breakdowns: [],
+
+            graphModel: null
         }
     },
 
     computed: {
-        chartComponent: function () {
-            return (this.chartType || 'empty') + '-chart'
-        },
         area: function () {
             return this.$route.params ? this.$route.params.area : 'loading ...'
         },
@@ -217,11 +98,10 @@ export default {
 
     watch: {
         'metric': function () {
-            this.loadData()
-            this.filterChartTypes()
+            this.loadData();
         },
-        'metricData.type': function () {
-            this.filterChartTypes()
+        'metricData.range': function () {
+            this.loadData();
         }
     },
 
@@ -232,38 +112,37 @@ export default {
     },
 
     methods: {
-        filterChartTypes () {
-            const self = this
-
-            self.chartTypes = self.availableChartTypes.filter(function (c) {
-                if (!self.metricData) { return false; }
-                if (self.metricData.type === 'bars') { return c.chart !== 'line' }
-                if (self.metricData.type === 'lines') { return c.chart === 'line' }
-                return c.chart === 'table'
-            })
-
-            self.chartType = self.chartTypes[0].chart
-            self.chartIcon = self.chartTypes[0].icon
-        },
 
         wikiSelected (wiki) {
-            this.$emit('wiki', wiki)
+            this.$emit('wiki', wiki);
+            this.loadData();
         },
         loadData () {
-            const self = this
-
             this.highlightMetric = { name: this.metric, area: this.area }
 
-            config.metricData(this.metric, this.area).then(function (result) {
-                self.metricData = result
-                self.breakdowns = result.breakdowns
-            })
+            config.metricData(this.metric, this.area).then((result) => {
+                this.metricData = result
+                this.breakdowns = result.breakdowns
+                let aqsApi = new AQS();
+                aqsApi.getData({
+                    project: [this.wiki.urlName],
+                    access: ['desktop', 'mobile-web', 'mobile-app']
+                }, {
+                    metric: result.metricName,
+                    agent_type: result.agent_type,
+                    granularity: result.granularity,
+                    start: result.range[0],
+                    end: result.range[1]
+                }).then(dimensionalData => {
+                    this.graphModel = new GraphModel(result, dimensionalData);
+                });
+            });
 
-            config.metrics(this.area).then(function (result) {
+            config.metrics(this.area).then((result) => {
                 const relevantMetrics = Object.keys(result)
-                    .filter((m) => result[m].area === self.area)
+                    .filter((m) => result[m].area === this.area)
 
-                self.otherMetrics =
+                this.otherMetrics =
                     relevantMetrics.map((m) => Object.assign(result[m], { name: m }))
             })
         },
@@ -301,6 +180,10 @@ export default {
             const h = this.highlightMetric
             router.push('/' + h.area + '/' + h.name)
             $('.ui.metrics.modal').modal('hide')
+        },
+
+        setTimeRange (newRange) {
+            this.metricData.range = newRange;
         }
     },
 }
@@ -314,67 +197,6 @@ export default {
 }
 .panel {
     padding: 25px 18px 18px 18px;
-}
-.left.panel {
-    background-color: #D8D8D8;
-    min-width: 242px;
-}
-.left.panel h3.header {
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 0 6px 0;
-}
-.left.panel p {
-    margin-top: 8px;
-}
-.left.panel .ui.clearing.divider {
-    margin-bottom: 2px;
-}
-.left.panel .wikis {
-    min-height: 120px;
-}
-.left.panel .ui.icon.input {
-    width: 204px;
-}
-.left.panel .ui.icon.input > input {
-    height: 36px;
-    font-size: 13px!important;
-    border: 1px solid #aaa9a9!important;
-    border-radius: 4px;
-    padding-right: 32px!important;
-}
-
-.graph.panel {
-    background-color: #FFFFFF;
-    flex: 1;
-    border-radius: 0 10px 10px 0;
-    padding-bottom: 8px;
-}
-
-.graph.panel h2.header {
-    margin-left: 10px;
-    font-size: 20px;
-    font-weight: 500;
-}
-.graph.panel h2.header .subdued {
-    margin-left: 4px;
-    font-size: 18px;
-    color: #777;
-    font-weight: 300;
-}
-.graph.panel .ui.right.floated.buttons {
-    border: solid 1px #d4d4d5;
-    border-radius: 4px;
-}
-.graph.panel .ui.right.floated.buttons .button {
-    border-right: solid 1px #d4d4d5;
-}
-.graph.panel .ui.right.floated.buttons .button:last-child {
-    border-right: none;
-}
-
-.graph.panel p {
-    margin: 0;
 }
 
 .clearing.basic.segment { padding: 0; }
@@ -427,47 +249,6 @@ export default {
     margin-right: 10px;
     margin-top: 5px;
     display: inline-block;
-}
-
-.ui.metrics.modal {
-    /* width: 685px; looks a little better bigger */
-    width: 780px;
-    left: 700px;
-}
-.ui.metrics.modal .header {
-    font-weight: bold;
-    border: none;
-    padding-bottom: 10px;
-}
-.ui.metrics.modal .actions {
-    border: none;
-    background-color: #fff;
-}
-.ui.metrics.modal .ui.grid {
-    padding: 14px 28px;
-}
-
-.ui.metrics.modal i.close.icon {
-    position: relative;
-    top: initial;
-    right: initial;
-    float: right;
-    color: #bababa;
-}
-.ui.metrics.modal .header .subdued {
-    font-size: 13px;
-    font-weight: normal;
-}
-
-.ui.metrics.modal .column h4 {
-    text-transform: capitalize;
-    font-size: 17px;
-    padding-bottom: 4px;
-    margin-bottom: 8px;
-}
-.ui.blue.button {
-    background-color: #3366cc!important;
-    width: 78px;
 }
 
 .add.wiki.design {
