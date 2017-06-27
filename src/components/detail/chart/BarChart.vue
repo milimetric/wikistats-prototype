@@ -73,7 +73,12 @@ export default {
 
                 if (typeof detail[0].total !=  'number') {
                     // TODO max should only take into account the active breakdowns, not all
-                    const max = _.max(detail.map((r) => _.max(_.map(r.total, (d) => d))))
+                    const max = _.max(detail.map((r) => {
+                        return _.max(_.map(r.total, (breakdownValue, key) => {
+                            return self.graphModel.getActiveBreakdown()
+                                    .values.find(v => v.key === key).on? breakdownValue: 0;
+                        }));
+                    }));
                     y.domain([0, max])
                     g.append('g').selectAll('.bar').data(detail)
                         .enter().selectAll('.minibar').data(function (d) {
