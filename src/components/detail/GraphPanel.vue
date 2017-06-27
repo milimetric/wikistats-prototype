@@ -31,6 +31,7 @@
             </div>
         </div>
         <component
+            v-if="graphModel"
             :is="chartComponent"
             :metricData="metricData"
             :graphModel="graphModel"

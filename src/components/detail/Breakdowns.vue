@@ -4,15 +4,15 @@
 
     <h3 class="header">Filters and Breakdowns</h3>
 
-    <div v-for="b in breakdowns">
+    <div v-for="b, i in breakdowns">
         {{b.name}}
         <label class="xui checkbox" v-for="bv in b.values">
-            <input type="checkbox" v-model="bv.on"/>
+            <input type="checkbox" v-model="bv.on" :disabled="!b.on"/>
             {{bv.name}}
         </label>
 
         <div class="ui toggle checkbox">
-            <input type="checkbox" id="breakdown" v-model="b.on">
+            <input type="checkbox" id="breakdown" v-model="b.on" key="b.key" @click="breakdownToggled(i)">
             <label for="breakdown">
                 Breakdown
                 <span v-if="!b.on">Off</span>
@@ -27,6 +27,17 @@
 <script>
     export default {
         name: 'breakdowns',
-        props: ['breakdowns']
+        props: ['breakdowns'],
+        methods: {
+            breakdownToggled (index) {
+                if (this.breakdowns[index].on) {
+                    this.breakdowns.forEach((b, i) => {
+                        if(i != index) {
+                            this.breakdowns[i].on = false;
+                        }
+                    })
+                }
+            }
+        }
     }
 </script>

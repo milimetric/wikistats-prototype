@@ -12,7 +12,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m in metricData.detail" v-if="metricData.type === 'bars'">
+            <tr v-for="m in graphModel.getGraphData()" v-if="metricData.type === 'bars'">
                 <td>{{m.month}}</td>
                 <td>{{m.total}}</td>
             </tr>
@@ -42,7 +42,7 @@
 <script>
 export default {
     name: 'map-chart',
-    props: ['metricData', 'breakdown'],
+    props: ['metricData', 'breakdown', 'graphModel'],
 
     mounted () {
         this.setColors()
