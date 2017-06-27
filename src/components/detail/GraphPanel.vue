@@ -37,7 +37,7 @@
             :graphModel="graphModel"
             :breakdown="breakdown">
         </component>
-        <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
+        <div class="ui center aligned basic segment" v-if="graphModel && metricData.type !== 'list'">
             <time-range-selector v-on:changeTimeRange='changeTimeRange'></time-range-selector>
             <h5>
                 Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="changeOverRange"></arrow-icon> {{((changeOverRange / total) * 100).toFixed(2)}}% over this time range.

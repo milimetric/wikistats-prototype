@@ -12,7 +12,12 @@
         </label>
 
         <div class="ui toggle checkbox">
-            <input type="checkbox" id="breakdown" v-model="b.on" key="b.key" @click="breakdownToggled(i)">
+            <input
+                type="checkbox"
+                id="breakdown"
+                v-model="b.on"
+                @click="breakdownToggled(i)"
+                :checked="shouldBeChecked(i)">
             <label for="breakdown">
                 Breakdown
                 <span v-if="!b.on">Off</span>
@@ -28,6 +33,11 @@
     export default {
         name: 'breakdowns',
         props: ['breakdowns'],
+        watch: {
+            breakdowns: function () {
+                this.shouldBeChecked();
+            }
+        },
         methods: {
             breakdownToggled (index) {
                 if (this.breakdowns[index].on) {
@@ -36,6 +46,15 @@
                             this.breakdowns[i].on = false;
                         }
                     })
+                }
+            },
+            shouldBeChecked (index) {
+                // HORRIBLE, this shouldn't have side effects
+                if(!this.breakdowns[index].values.some(b => b.on)) {
+                    this.breakdowns[index].values.forEach(v => {
+                        v.on = true;
+                    })
+                    this.breakdowns[index].on = false
                 }
             }
         }
