@@ -8,9 +8,7 @@ class GraphModel {
         const yAxisValue = 'views';
         this.dimensionalData.measure('timestamp');
         const activeBreakdown = this.metricData.breakdowns.filter((breakdown) => {
-            return breakdown.values.some((v) => {
-                return v.on
-            });
+            return breakdown.on;
         })[0];
         if (activeBreakdown) {
             let brokenDownValues = [];

@@ -322,9 +322,9 @@ const metrics = {
             name: 'Access method',
             breakdownName: 'access',
             values: [
-                { name: 'Desktop', on: false, key: 'desktop' },
-                { name: 'Mobile App', on: false, key: 'mobile-app' },
-                { name: 'Mobile Web', on: false, key: 'mobile-web' }
+                { name: 'Desktop', on: true, key: 'desktop' },
+                { name: 'Mobile App', on: true, key: 'mobile-app' },
+                { name: 'Mobile Web', on: true, key: 'mobile-web' }
             ]
         }],
     },
