@@ -40,7 +40,7 @@
         <div class="ui center aligned basic segment" v-if="metricData.type !== 'list'">
             <time-range-selector v-on:changeTimeRange='changeTimeRange'></time-range-selector>
             <h5>
-                Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="metricData.changeYoY"></arrow-icon> {{metricData.changeYoY}} <i>this year</i>
+                Total: {{total | kmb}} {{metricData.fullName}} <arrow-icon :value="changeOverRange"></arrow-icon> {{((changeOverRange / total) * 100).toFixed(2)}}% over this time range.
             </h5>
         </div>
         <div class="ui center aligned subdued basic segment">
@@ -94,14 +94,15 @@ export default {
             return (chartTypes[0].chart || 'empty') + '-chart'
         },
         total: function () {
-            const data = this.graphModel && this.graphModel.getGraphData();
-            if (!data) { return 0 }
-
-            return data.reduce((r, m) => r + m.total, 0)
+            return this.graphModel && this.graphModel.getTotal();
         },
         metric: function () {
             return this.$route.params.metric ?
                 this.$route.params.metric : this.defaultMetrics[this.area]
+        },
+        changeOverRange: function () {
+            const data = this.graphModel.getAggregatedValues();
+            return data[data.length - 1] - data[0];
         }
     },
     data () {

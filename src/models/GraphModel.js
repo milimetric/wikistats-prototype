@@ -7,10 +7,9 @@ class GraphModel {
         const xAxisValue = 'timestamp';
         const yAxisValue = 'views';
         this.dimensionalData.measure('timestamp');
-        const activeBreakdown = this.metricData.breakdowns.filter((breakdown) => {
-            return breakdown.on;
-        })[0];
+        const activeBreakdown = this.getActiveBreakdown();
         if (activeBreakdown) {
+            // TODO: individual breakdown values should be filtered with DimensionalData
             let brokenDownValues = [];
             const rawValues = this.dimensionalData.breakdown(yAxisValue, activeBreakdown.breakdownName);
             return rawValues.map((row) => {
@@ -39,6 +38,28 @@ class GraphModel {
     }
     getDarkColor () {
         return this.metricData.darkColor;
+    }
+    getTotal () {
+        return _.sum(this.getAggregatedValues());
+    }
+    getActiveBreakdown () {
+        return this.metricData.breakdowns.filter((breakdown) => {
+            return breakdown.on;
+        })[0];
+    }
+    getAggregatedValues () {
+        const data = this.getGraphData();
+        if (typeof data[0].total === 'number') {
+            return data.map((c) => {
+                return c.total
+            });
+        } else {
+            return data.map((r) => {
+                return _.sum(_.map(r.total, (breakdownValue, key) => {
+                    return this.getActiveBreakdown().values.find(v => v.key === key).on? breakdownValue: 0;
+                }));
+            });
+        }
     }
 }
 

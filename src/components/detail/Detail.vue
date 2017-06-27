@@ -87,12 +87,6 @@ export default {
 
         breakdown: function () {
             return (this.breakdowns || []).find((m) => m.on)
-        },
-
-        total: function () {
-            if (!this.metricData.detail) { return 0 }
-
-            return this.metricData.detail.reduce((r, m) => r + m.total, 0)
         }
     },
 
