@@ -30,9 +30,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr v-for="m in metricData.detail">
+            <tr v-for="m in graphModel.getGraphData()">
                 <td>{{m.month}}</td>
-                <td v-for="v in breakdown.values" v-if="v.on">{{m.breakdowns[breakdown.name][v.name]}}</td>
+                <td v-for="v in breakdown.values" v-if="v.on">{{m.total[v.key]}}</td>
             </tr>
         </tbody>
     </table>
