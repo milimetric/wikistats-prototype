@@ -2,7 +2,7 @@
 <section class="left panel" >
     <div class="wikis">
         <h3 class="header">Wiki</h3>
-        <wiki-selector :wiki="wiki" single="false" @wiki="wikiSelected"></wiki-selector>
+        <wiki-selector :wiki="wiki" :single="false" @wikiSelected="wikiSelected"></wiki-selector>
     </div>
 
     <div class="ui clearing divider"></div>
@@ -28,6 +28,9 @@
 import WikiSelector from '../WikiSelector'
 import Breakdowns from './Breakdowns'
 
+import '../../../semantic/src/definitions/modules/modal'
+import '../../../semantic/src/definitions/modules/dimmer'
+
 export default {
     name: 'detail-sidebar',
     props: ['wiki','otherMetrics','metric','breakdowns','area'],
@@ -38,7 +41,11 @@ export default {
     methods: {
         wikiSelected (wiki) {
             this.$emit('wikiSelected', wiki);
-        }
+        },
+
+        viewMoreMetrics () {
+            $('.ui.metrics.modal', this.$el).modal('show')
+        },
     }
 }
 </script>

@@ -18,17 +18,17 @@
             subtitle="description"
             @select="found"></search-results>
     </div>
-    <p>
+    <div v-if="!single">
         <a @click.prevent="addAnotherWiki" href="#">Add another Wiki</a>
         <div class="add wiki design">
             "Add another Wiki" is not implemented in the prototype.  But you can see how it would work in <a target="_new" href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Detail+Page+Two+Wiki+comparison.png">the design here</a> and <a href="https://www.dropbox.com/sh/lfrn4lcjyqhou7o/AAAmzec_63b1UwaZCGFDw1gea?dl=0&preview=Wiki+Selector.png" target="_new">here</a>.
         </div>
-    </p>
+    </div>
 </div>
 </template>
 
 <script>
-import sitematrix from '../apis/sitematrix';
+import sitematrix from '../apis/Sitematrix';
 import SearchResults from './widgets/SearchResults';
 
 
@@ -41,7 +41,7 @@ const separator = ' – ';
 
 export default {
     name: 'wiki-selector',
-    props: ['single'],
+    props: {single: { type: Boolean, default: true }},
 
     data () {
         return {
@@ -91,7 +91,7 @@ export default {
             // if both family and language are selected, broadcast the choice
             } else if (this.family && this.language) {
                 const { family, language } = this;
-                this.$emit('wiki', { family, language });
+                this.$emit('wikiSelected', { family, language });
             }
         }
     },
