@@ -1,43 +1,46 @@
 <template>
 <div>
     <div class="ui medium statistic">
-        <div class="label">{{data.fullName}}</div>
-        <div class="value">{{data.lastMonthValue | kmb}}</div>
+        <div class="label">{{metricData.fullName}}</div>
+        <div class="value">{{lastMonth.total | kmb}}</div>
     </div>
     <div>
-        <span class="subdued">{{data.lastMonth}}</span>
+        <span class="subdued">{{getMonthValue(lastMonth.month)}}</span>
 
         <span class="change label">
-            <arrow-icon :value="data.changeMoM"/>
-            {{data.changeMoM}} % month over month
+            <arrow-icon :value="changeMoM"/>
+            {{changeMoM}} % month over month
         </span>
     </div>
     <div class="bar-chart">
     </div>
     <div class="ui horizontal small statistic">
         <div class="value">
-            {{data.lastYearValue | kmb}}
+            {{lastYear.total | kmb}}
         </div>
         <div class="change label">
-            <arrow-icon :value="data.changeYoY"/>
-            {{data.changeYoY}} % year over year
+            <arrow-icon :value="changeYoY"/>
+            {{changeYoY}} % year over year
         </div>
     </div>
     <div class="year total subdued">
-        Year Total ({{data.lastYear}})
+        Year Total ({{lastYear.month.split('-')[0]}})
     </div>
 </div>
 </template>
 
 <script>
+import _ from 'lodash'
 import ArrowIcon from '../ArrowIcon'
 import * as d3 from 'd3-selection'
 import * as scales from 'd3-scale'
 import * as arr from 'd3-array'
 
+const months = [null, 'J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D'];
+
 export default {
     name: 'metric-bar-widget',
-    props: ['data'],
+    props: ['metricData', 'graphModel'],
 
     components: {
         ArrowIcon,
@@ -45,6 +48,28 @@ export default {
 
     mounted () {
         this.drawChart()
+    },
+
+    computed: {
+        lastMonth: function () {
+            return _.last(this.graphData);
+        },
+        lastYear: function () {
+            return this.graphData[_.indexOf(this.graphData, this.lastMonth) - 12]
+        },
+        changeMoM: function () {
+            const data = this.graphData;
+            const prev = data[data.length - 2];
+            const diff = this.lastMonth.total - prev.total;
+            return ((diff / prev.total) * 100).toFixed(2);
+        },
+        changeYoY: function () {
+            const diff = this.lastMonth.total - this.lastYear.total;
+            return ((diff / this.lastYear.total) * 100).toFixed(2);
+        },
+        graphData: function () {
+            return this.graphModel.getGraphData();
+        }
     },
 
     methods: {
@@ -61,8 +86,10 @@ export default {
                     'transform', `translate(${margin.left},${margin.top})`
                   )
 
-            const data = self.data.series ?
-                self.data : { series: [] }
+            const data = self.metricData.series ?
+                self.metricData : { series: [] }
+
+            const rowData = this.graphModel.getGraphData();
 
             function resize () {
                 const n = root.node(),
@@ -71,39 +98,43 @@ export default {
                       x = scales.scaleBand().rangeRound([0, width]).padding(0.3),
                       y = scales.scaleLinear().rangeRound([height, 0])
 
-                x.domain(data.series.map((d) => d.month))
-                y.domain([0, arr.max(data.series.map((d) => d.metric))])
+                x.domain(rowData.map((d) => d.month))
+                y.domain([0, arr.max(rowData.map((d) => d.total))])
 
                 svg.attr('width', n.offsetWidth).attr('height', n.offsetHeight)
                 g.attr('width', width).attr('height', height)
-                // console.log('resized ' + width, height)
-                g.append('g').selectAll('.bar').data(data.series)
+                const lastMonth = rowData[rowData.length - 1].month;
+                g.append('g').selectAll('.bar').data(rowData)
                     .enter().append('rect')
                         .attr('x', (d) => x(d.month))
-                        .attr('y', (d) => y(d.metric))
+                        .attr('y', (d) => y(d.total))
                         .attr('width', x.bandwidth())
-                        .attr('height', (d) => height - y(d.metric))
+                        .attr('height', (d) => height - y(d.total))
                         .attr('fill', (d) =>
-                            d.month === self.data.lastMonth ?
-                                self.data.darkColor : self.data.lightColor
+                            d.month === lastMonth ?
+                                self.metricData.darkColor : self.metricData.lightColor
                         )
 
                 g.append('g').classed('month-ticks', true)
                     .attr('transform', `translate(${
                                             x.bandwidth() / 2 - 3
                                         },${12})`)
-                    .selectAll('.month').data(data.series)
+                    .selectAll('.month').data(rowData)
                     .enter().append('text')
                         .attr('x', (d) => x(d.month))
                         .attr('y', height)
-                        .text((d) => d.month.substring(0, 1))
-                            .style('fill', '#898989')
-                            .style('font-size', '9px')
-                            .style('font-family', 'Lato')
+                        .text((d) => {
+                            return self.getMonthValue(d.month);
+                        }).style('fill', '#898989')
+                          .style('font-size', '9px')
+                          .style('font-family', 'Lato')
             }
             resize()
             // TODO: get this to resize cleanly d3.select(window).on('resize', resize)
         },
+        getMonthValue (date) {
+            return months[parseInt(date.split('-')[1])]
+        }
     }
 }
 </script>

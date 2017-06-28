@@ -9,7 +9,7 @@
     <div class="ui basic area segment"
         v-for="a in areas"
         :key="a.state.id">
-        <dashboard-area :area="a.state"></dashboard-area>
+        <dashboard-area :wiki="wiki" :area="a.state"></dashboard-area>
     </div>
 </section>
 </template>
