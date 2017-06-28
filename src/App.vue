@@ -1,13 +1,12 @@
 <template>
 <div class="app">
-    <h1 v-show="warning" class="ui red header">PROTOTYPE: Only tested in Chrome, No real data, "Loading Delay" is fake, This is a WORK IN PROGRESS</h1>
     <section class="ui top attached clearing segment">
         <top-nav></top-nav>
     </section>
     <section class="ui attached content segment">
         <topic-explorer></topic-explorer>
 
-        <router-view :wiki="wiki" @wiki="wikiSelected"></router-view>
+        <router-view :wiki="wiki" @wikiSelected="wikiSelected"></router-view>
     </section>
     <section class="ui attached language segment">
         <site-language></site-language>
@@ -28,18 +27,19 @@ export default {
     name: 'app',
     data () {
         return {
-            warning: true,
             wiki: {
-                title: 'Wikipedia (All languages)',
-                urlName: 'all-projects'
+                // TODO: auto-select default wiki in wiki selector
+                family: {
+                    id: 'all',
+                    title: 'All Projects',
+                },
+                language: {
+                    id: 'all',
+                    title: 'All Languages',
+                    address: 'all-projects',
+                },
             }
         }
-    },
-    mounted () {
-        const self = this
-        setTimeout(function () {
-            self.warning = false
-        }, 7000)
     },
     components: {
         TopNav,
@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         wikiSelected (wiki) {
-            this.wiki = wiki
+            this.wiki = wiki;
         }
     }
 }

@@ -42,11 +42,9 @@ import DimensionalData from '../../models/DimensionalData'
 import GraphModel from '../../models/GraphModel'
 import AQS from '../../apis/aqs'
 
-import '../../../semantic/src/definitions/modules/modal'
-import '../../../semantic/src/definitions/modules/dimmer'
-
 export default {
     name: 'detail',
+    // TODO: move to the router
     props: ['wiki'],
     components: {
         SimpleLegend,
@@ -87,29 +85,31 @@ export default {
 
         breakdown: function () {
             return (this.breakdowns || []).find((m) => m.on)
-        }
+        },
+
+        loadDataParams: function () {
+            return {
+                metric: this.metric,
+                range: this.metricData.range,
+                wiki: this.wiki,
+            }
+        },
     },
 
     watch: {
-        'metric': function () {
-            this.loadData();
-        },
-        'metricData.range': function () {
-            this.loadData();
-        }
+        loadDataParams: 'loadData',
     },
 
     mounted () {
-        $('body').scrollTop(0)
-        this.loadData()
-        $('.ui.metrics.modal').modal()
+        $('body').scrollTop(0);
+        this.loadData();
+        $('.ui.metrics.modal').modal();
     },
 
     methods: {
 
         wikiSelected (wiki) {
-            this.$emit('wiki', wiki);
-            this.loadData();
+            this.$emit('wikiSelected', wiki);
         },
         loadData () {
             this.highlightMetric = { name: this.metric, area: this.area }
@@ -119,7 +119,7 @@ export default {
                 this.breakdowns = result.breakdowns
                 let aqsApi = new AQS();
                 aqsApi.getData({
-                    project: [this.wiki.urlName],
+                    project: [this.wiki.language.address],
                     access: ['desktop', 'mobile-web', 'mobile-app']
                 }, {
                     metric: result.metricName,
@@ -160,10 +160,6 @@ export default {
 
         addAnotherWiki () {
             $('.add.wiki.design').toggle('highlight')
-        },
-
-        viewMoreMetrics () {
-            $('.ui.metrics.modal').modal('show')
         },
 
         changeHighlight (name, area) {
