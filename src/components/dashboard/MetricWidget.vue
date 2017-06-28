@@ -1,18 +1,21 @@
 <template>
-<router-link class="widget column" :to="area + '/' + metric.name">
+<router-link v-if="graphModel" class="widget column" :to="area + '/' + metric.name">
     <metric-bar-widget
         v-if="metricData.type === 'bars'"
-        :data="metricData">
+        :metricData="metricData"
+        :graphModel="graphModel">
     </metric-bar-widget>
 
     <metric-line-widget
         v-else-if="metricData.type === 'lines'"
-        :data="metricData">
+        :metricData="metricData"
+        :graphModel="graphModel">
     </metric-line-widget>
 
     <metric-list-widget
         v-else-if="metricData.type === 'list'"
-        :data="metricData">
+        :metricData="metricData"
+        :graphModel="graphModel">
     </metric-list-widget>
 </router-link>
 </template>
@@ -23,13 +26,17 @@ import MetricLineWidget from './MetricLineWidget'
 import MetricListWidget from './MetricListWidget'
 import config from '../../apis/Configuration'
 
+import AQS from '../../apis/aqs'
+import GraphModel from '../../models/GraphModel'
+
 export default {
     name: 'metric-widget',
-    props: ['metric', 'area'],
+    props: ['metric', 'area', 'wiki'],
     data () {
         return {
             loading: false,
             metricData: {},
+            graphModel: null
         }
     },
 
@@ -53,12 +60,25 @@ export default {
 
     methods: {
         load () {
-            const self = this
-            self.loading = true
+            this.loading = true
 
-            config.metricData(self.metric.name, self.area).then(function (result) {
-                self.metricData = result
-                self.loading = false
+            config.metricData(this.metric.name, this.area).then((result) => {
+                this.loading = false
+                this.metricData = result
+                this.breakdowns = result.breakdowns
+                let aqsApi = new AQS();
+                aqsApi.getData({
+                    project: [this.wiki.urlName],
+                    access: ['desktop', 'mobile-web', 'mobile-app']
+                }, {
+                    metric: result.metricName,
+                    agent_type: result.agent_type,
+                    granularity: result.granularity,
+                    start: result.range[0],
+                    end: result.range[1]
+                }).then(dimensionalData => {
+                    this.graphModel = new GraphModel(result, dimensionalData);
+                });
             })
         },
     },
